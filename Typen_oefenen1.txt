@@ -1,0 +1,1141 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Typen oefenen — v3.13 lijnen + kleur</title>
+<style>
+  :root{
+    --bg:#f6fbff; --paper:#ffffff; --line:#e5e7eb; --ink:#0f172a;
+    --fun2:#dcfce7; --btn-disabled:#cbd5e1;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    background:var(--bg);
+    color:var(--ink);
+  }
+  .ribbon{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    padding:14px 16px;
+    background:linear-gradient(90deg,#e0f2fe,#fde68a,#fbcfe8);
+    border-bottom:1px solid var(--line);
+  }
+  .brand{
+    font-weight:900;
+    color:#1e293b;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .brand .logo{font-size:24px}
+  .container{
+    max-width:1100px;
+    margin:16px auto;
+    padding:0 16px;
+    display:grid;
+    gap:16px;
+  }
+  .panel{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:14px;
+    box-shadow:0 2px 6px rgba(0,0,0,.04);
+  }
+  .levels{display:flex; gap:12px; flex-wrap:wrap}
+  .levelBtn{
+    border:0;
+    border-radius:14px;
+    padding:14px 18px;
+    font-weight:900;
+    font-size:18px;
+    color:#fff;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,.12);
+  }
+  .easy{background:linear-gradient(180deg,#34d399,#16a34a)}
+  .normal{background:linear-gradient(180deg,#38bdf8,#0ea5e9)}
+  .hard{background:linear-gradient(180deg,#fb923c,#f97316)}
+  .style{background:linear-gradient(180deg,#a78bfa,#7c3aed)}
+  .disabled{background:var(--btn-disabled)!important; color:#475569; cursor:not-allowed; box-shadow:none}
+  .hint{color:#334155; font-size:14px}
+  .textline{
+    min-height:46px;
+    font-size:20px;
+    line-height:1.6;
+    border:2px solid var(--line);
+    background:var(--fun2);
+    border-radius:12px;
+    padding:8px 10px;
+    white-space:pre-wrap;
+  }
+  #styleTarget{
+    white-space:normal;
+  }
+  .editor{
+    width:100%;
+    min-height:260px;
+    padding:14px;
+    border-radius:14px;
+    border:3px solid #bfdbfe;
+    background:#fff;
+    font-size:18px;
+    line-height:1.6;
+  }
+  .typeHeader{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    margin-bottom:6px;
+  }
+  .toolbar{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    margin-top:8px;
+  }
+  .btn{
+    padding:8px 12px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:#fff;
+    cursor:pointer;
+    font-weight:700;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btnResetPrimary{
+    background:linear-gradient(180deg,#38bdf8,#0ea5e9);
+    color:#fff;
+    border-color:#0ea5e9;
+    border-width:1px;
+    font-size:16px;
+    padding:10px 18px;
+    border-radius:999px;
+    box-shadow:0 3px 8px rgba(59,130,246,0.4);
+  }
+  .btnNextLevel{
+    background:linear-gradient(180deg,#fb923c,#f97316);
+    color:#fff;
+    border-color:#f97316;
+    border-width:1px;
+    font-size:15px;
+    padding:8px 16px;
+    border-radius:999px;
+    box-shadow:0 3px 8px rgba(248,113,113,0.4);
+  }
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:10px;
+    margin-top:10px;
+  }
+  .stat{
+    background:#f8fafc;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:10px;
+  }
+  .big{font-size:22px; font-weight:900}
+  .glyph{padding:2px 3px; border-radius:6px}
+  .glyph.correct{background:#ecfdf5}
+  .glyph.wrong{background:#ffe4e6; text-decoration:line-through; color:#b91c1c}
+  .glyph.next{border-bottom:3px solid #2563eb}
+  .cheats{display:flex; gap:10px; flex-wrap:wrap; margin-top:8px}
+  .chip{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:12px;
+    padding:8px 10px;
+    box-shadow:0 1px 3px rgba(0,0,0,.04);
+  }
+  .chip.on{background:#e0f2fe; border-color:#93c5fd}
+  .chip svg{width:22px; height:22px}
+  .kbd{display:flex; flex-direction:column; gap:6px; margin-top:10px}
+  .row{display:flex; gap:6px}
+  .key{
+    flex:1;
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:8px;
+    padding:8px 0;
+    text-align:center;
+    user-select:none;
+    font-weight:800;
+    cursor:pointer;
+    font-size:11px;
+    white-space:pre-line;
+  }
+  .key.wide{flex:2}
+  .key.space{flex:5}
+  .key.hl{background:#e0f2fe; border-color:#3b82f6}
+  #confetti{position:fixed; inset:0; pointer-events:none}
+  .lines{margin-top:10px; display:flex; flex-wrap:wrap; gap:6px}
+  .linechip{
+    border:1px solid var(--line);
+    background:#fff;
+    padding:6px 10px;
+    border-radius:10px;
+    font-weight:700;
+    min-width:30px;
+    text-align:center;
+  }
+  .linechip.ok{background:#dcfce7; border-color:#86efac}
+  .linechip.partial{background:#fef9c3; border-color:#facc15}
+  .linechip.pending{background:#fff7ed; border-color:#fed7aa}
+  #styleArea{
+    background:#fff;
+    border:2px dashed var(--line);
+    padding:12px;
+    border-radius:12px;
+    min-height:120px;
+    font-size:20px;
+    line-height:1.6;
+  }
+  .selected{outline:3px solid #60a5fa; border-radius:6px}
+
+  /* Eindresultaat-overlay */
+  #resultOverlay{
+    position:fixed;
+    inset:0;
+    background:rgba(15,23,42,.75);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:60;
+  }
+  #resultBox{
+    background:#fff;
+    max-width:640px;
+    width:92%;
+    border-radius:20px;
+    padding:20px 18px 18px;
+    box-shadow:0 10px 40px rgba(0,0,0,.35);
+    text-align:center;
+  }
+  #resultGrade{
+    font-size:64px;
+    font-weight:900;
+    margin-bottom:4px;
+  }
+  #resultLabel{
+    font-size:18px;
+    margin-bottom:10px;
+  }
+  #resultDetails{
+    text-align:left;
+    font-size:14px;
+    line-height:1.6;
+    max-height:260px;
+    overflow-y:auto;
+  }
+</style>
+</head>
+<body>
+  <canvas id="confetti"></canvas>
+
+  <!-- Eindresultaat overlay -->
+  <div id="resultOverlay">
+    <div id="resultBox">
+      <div id="resultGrade">--</div>
+      <div id="resultLabel">Begin met oefenen!</div>
+      <div id="resultDetails"></div>
+      <button class="btn btnResetPrimary" id="closeResult" style="margin-top:14px;">Sluiten</button>
+    </div>
+  </div>
+
+  <div class="ribbon">
+    <div class="brand">
+      <span class="logo">🎉</span>
+      <span>Typen oefenen — v3.13 lijnen + kleur</span>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="panel">
+      <h3>1) Niveaus</h3>
+      <div class="levels">
+        <button class="levelBtn easy"   id="btnEasy">Makkelijk</button>
+        <button class="levelBtn normal disabled" id="btnNormal" disabled>Normaal</button>
+        <button class="levelBtn hard   disabled" id="btnHard" disabled>Moeilijk</button>
+        <button class="levelBtn style  disabled" id="btnStyle" disabled>Kleur typen</button>
+      </div>
+      <div class="hint" id="hint">
+        Je start bij <strong>Makkelijk</strong>: alleen woorden en spaties. Rond af om het volgende niveau te openen.
+      </div>
+
+      <div class="cheats" id="cheats"></div>
+    </div>
+
+    <div class="panel" id="typePanel">
+      <div class="typeHeader">
+        <h3>2) Typ hier</h3>
+        <button class="btn btnResetPrimary" id="btnReset">Level opnieuw</button>
+      </div>
+
+      <div id="typedLine" class="textline"></div>
+
+      <textarea id="input" class="editor" placeholder="Typ hier precies na..." disabled
+        spellcheck="false" autocorrect="off" autocomplete="off" autocapitalize="off"></textarea>
+
+      <div class="hint" style="margin-top:8px; text-align:left">
+        <label><input type="checkbox" id="showKeyboard"> Schermtoetsenbord tonen</label>
+      </div>
+      <div class="kbd" id="keyboard" style="display:none">
+        <div class="row" id="row0"></div>
+        <div class="row" id="row1"></div>
+        <div class="row" id="row2"></div>
+        <div class="row" id="row3"></div>
+        <div class="row" id="row4"></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="big" id="wpm">0</div><div>WPM</div></div>
+        <div class="stat"><div class="big" id="acc">0%</div><div>Nauwkeurigheid</div></div>
+        <div class="stat"><div class="big" id="time">0s</div><div>Tijd</div></div>
+        <div class="stat"><div class="big" id="errors">0</div><div>Fouten</div></div>
+        <div class="stat"><div class="big" id="linesOK">0/0</div><div>Regels klaar</div></div>
+      </div>
+
+      <div class="lines" id="lineChips"></div>
+
+      <div style="margin-top:10px; text-align:right;">
+        <button class="btn btnNextLevel" id="btnNextLevel">Volgend level ▶</button>
+      </div>
+    </div>
+
+    <div class="panel" id="stylePanel" style="display:none">
+      <div class="typeHeader">
+        <h3>3) Kleur typen</h3>
+        <button class="btn btnResetPrimary" id="btnResetStyle">Level opnieuw</button>
+      </div>
+      <div class="hint">
+        In het groene vlak zie je een voorbeeldtekst met hoofdletters, punten en gekleurde woorden.
+        In het witte vlak staat dezelfde tekst normaal. Maak de witte tekst hetzelfde als het voorbeeld.
+      </div>
+
+      <div id="styleTarget" class="textline" style="margin-top:8px;">
+        <span style="font-size:26px; color:#16a34a; font-weight:900;">Sam</span> loopt in het
+        <span style="color:#15803d;">bos</span>.
+        Zij <span style="font-size:24px; color:#0ea5e9;">ziet</span> een grote
+        <span style="font-size:26px; color:#a855f7; font-weight:900;">boom</span> en een
+        <span style="color:#ef4444; font-weight:900;">rode</span> vogel.
+        Op de tak zit een <span style="font-size:18px; color:#f97316;">rups</span>.
+        De <span style="color:#facc15;">zon</span> schijnt op het
+        <span style="color:#22c55e;">gras</span>.
+        <span style="color:#16a34a; font-weight:900;">Sam</span> draagt een
+        <span style="color:#ef4444; font-weight:900;">rode</span> jas.
+        Zij ziet een <span style="color:#eab308;">gele</span> bloem.
+        Haar <span style="font-weight:900;">grote</span> hond rent
+        <span style="font-size:24px;">blij</span> rond.
+        Zij hoort een <span style="color:#3b82f6;">bij</span> zoemen.
+        Er ligt een grote <span style="font-size:22px; font-weight:900;">steen</span> op het pad.
+        <span style="color:#16a34a; font-weight:900;">Sam</span> gaat weer naar huis.
+        Onderweg zwaait ze naar een vriend.
+        In de verte ziet ze de school.
+      </div>
+
+      <div class="hint" style="margin-top:8px;">
+        Klik in de witte tekst hieronder op een woord, en verander daarna kleur, grootte of maak het vet.
+        Alleen de woorden die in het voorbeeld extra opvallen, hoeven aangepast te worden.
+      </div>
+
+      <div class="toolbar" style="margin-top:8px">
+        <div class="swatch" data-color="#ef4444" style="background:#ef4444;width:28px;height:28px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.08);cursor:pointer"></div>
+        <div class="swatch" data-color="#3b82f6" style="background:#3b82f6;width:28px;height:28px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.08);cursor:pointer"></div>
+        <div class="swatch" data-color="#10b981" style="background:#10b981;width:28px;height:28px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.08);cursor:pointer"></div>
+        <div class="swatch" data-color="#f59e0b" style="background:#f59e0b;width:28px;height:28px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.08);cursor:pointer"></div>
+        <div class="swatch" data-color="#8b5cf6" style="background:#8b5cf6;width:28px;height:28px;border-radius:8px;border:2px solid:#fff;box-shadow:0 0 0 2px rgba(0,0,0,.08);cursor:pointer"></div>
+        <button class="btn sizeBtn" data-size="16">A-</button>
+        <button class="btn sizeBtn" data-size="20">A</button>
+        <button class="btn sizeBtn" data-size="28">A+</button>
+        <button class="btn sizeBtn" data-size="36">A++</button>
+        <button class="btn sizeBtn" data-bold="toggle"><strong>Vet</strong></button>
+      </div>
+
+      <div id="styleArea"></div>
+
+      <div class="lines" id="styleLineChips"></div>
+      <div class="hint" id="styleProgressText" style="margin-top:4px;"></div>
+
+      <div style="margin-top:10px; text-align:right;">
+        <button class="btn btnNextLevel" id="btnStyleResult">Eindresultaat 🎉</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// -------- Teksten --------
+const EASY_WORDS = [
+  "sam loopt in het bos",
+  "zij ziet een grote boom",
+  "op de tak zit een rups",
+  "de zon schijnt op het gras",
+  "sam draagt een rode jas",
+  "zij ziet een gele bloem",
+  "haar grote hond rent blij rond",
+  "zij hoort een bij zoemen",
+  "er ligt een grote steen op het pad",
+  "sam gaat weer naar huis"
+].join(" ").toLowerCase();
+
+const NORMAL_TEXT = [
+  "Vandaag gaat onze klas naar de bibliotheek.",
+  "We lezen rustig, en kiezen een boek.",
+  "Sommige kinderen schrijven, anderen tekenen.",
+  "De juf helpt ons, en geeft tips.",
+  "Daarna lopen we samen naar buiten.",
+  "Op het plein spelen we tikkertje, verstoppertje, en voetbal.",
+  "Ik praat even met mijn vriend of vriendin, en we lachen.",
+  "De zon schijnt, maar er waait een frisse wind.",
+  "We drinken water, eten fruit, en ruimen op.",
+  "Aan het einde van de dag nemen we afscheid."
+].join("\n");
+
+const HARD_TEXT = [
+  "Denk na voor je typt. (Slim!)",
+  "Wie leest mee? Vraag het gerust.",
+  "Kies een sterk wachtwoord (en houd het geheim).",
+  "Klik niet zomaar: klopt de link?",
+  "Lees rustig; neem je tijd (dat helpt).",
+  "Gebruik school/regels voor tips.",
+  "Twijfel je? Vraag hulp aan een volwassene.",
+  "Deel geen wachtwoorden / geheime dingen.",
+  "Mail je vraag naar info@school.nl.",
+  "Klaar? Mooi! (Goed gedaan!)"
+].join("\n");
+
+// kleur-typen tekst
+const STYLE_TEXT = [
+  "Sam loopt in het bos.",
+  "Zij ziet een grote boom en een rode vogel.",
+  "Op de tak zit een rups.",
+  "De zon schijnt op het gras.",
+  "Sam draagt een rode jas.",
+  "Zij ziet een gele bloem.",
+  "Haar grote hond rent blij rond.",
+  "Zij hoort een bij zoemen.",
+  "Er ligt een grote steen op het pad.",
+  "Sam gaat weer naar huis.",
+  "Onderweg zwaait ze naar een vriend.",
+  "In de verte ziet ze de school."
+].join("\n");
+const STYLE_SENTENCES = STYLE_TEXT.split("\n");
+
+// woorden die in elke zin aangepast moeten worden
+const STYLE_SPECIAL_WORDS = [
+  ["sam","bos"],
+  ["ziet","boom","rode"],
+  ["rups"],
+  ["zon","gras"],
+  ["sam","rode"],
+  ["gele"],
+  ["grote","blij"],
+  ["bij"],
+  ["steen"],
+  ["sam"],
+  ["vriend"],
+  ["school"]
+];
+
+// -------- State --------
+function normalizeInput(s){
+  return (s||"").replace(/\r\n/g,"\n").replace(/\u00A0/g," ");
+}
+let target = "";
+let started=false, startTime=0, timer=null;
+let totalTyped=0;
+let currentLevel="easy";
+let targetLines=[];
+let lineChipsEls=[];
+let currentAcc=0;
+
+// kleur-typen score per zin
+let styleSentWordTotal=[];
+let styleSentWordChanged=[];
+let styleSentChips=[];
+const styleProgressText=document.getElementById('styleProgressText');
+
+// stats per level voor eindresultaat
+let levelStats = {
+  easy:   {done:false, time:0, acc:0, errors:0},
+  normal: {done:false, time:0, acc:0, errors:0},
+  hard:   {done:false, time:0, acc:0, errors:0},
+  style:  {done:false, percent:0}
+};
+
+const typedLine=document.getElementById('typedLine');
+const inputEl=document.getElementById('input');
+const wpmEl=document.getElementById('wpm');
+const accEl=document.getElementById('acc');
+const timeEl=document.getElementById('time');
+const errEl=document.getElementById('errors');
+const stylePanel=document.getElementById('stylePanel');
+const styleArea=document.getElementById('styleArea');
+const hintEl=document.getElementById('hint');
+const cheats=document.getElementById('cheats');
+const lineChips=document.getElementById('lineChips');
+const linesOK=document.getElementById('linesOK');
+const styleLineChips=document.getElementById('styleLineChips');
+
+const btnEasy=document.getElementById('btnEasy');
+const btnNormal=document.getElementById('btnNormal');
+const btnHard=document.getElementById('btnHard');
+const btnStyle=document.getElementById('btnStyle');
+const btnNextLevel=document.getElementById('btnNextLevel');
+const btnResetStyle=document.getElementById('btnResetStyle');
+const btnStyleResult=document.getElementById('btnStyleResult');
+
+const resultOverlay=document.getElementById('resultOverlay');
+const resultGrade=document.getElementById('resultGrade');
+const resultLabel=document.getElementById('resultLabel');
+const resultDetails=document.getElementById('resultDetails');
+document.getElementById('closeResult').addEventListener('click',()=> resultOverlay.style.display='none');
+
+document.getElementById('btnReset').addEventListener('click',()=> chooseLevel(currentLevel));
+btnResetStyle.addEventListener('click',()=> chooseLevel('style'));
+
+btnEasy.addEventListener('click',()=> chooseLevel('easy'));
+btnNormal.addEventListener('click',()=>{ if(!btnNormal.disabled) chooseLevel('normal'); });
+btnHard.addEventListener('click',()=>{ if(!btnHard.disabled) chooseLevel('hard'); });
+btnStyle.addEventListener('click',()=>{ if(!btnStyle.disabled) chooseLevel('style'); });
+btnNextLevel.addEventListener('click',goNextLevel);
+
+btnStyleResult.addEventListener('click',showEndResult);
+
+document.getElementById('showKeyboard').addEventListener('change',e=>{
+  document.getElementById('keyboard').style.display = e.target.checked ? 'block' : 'none';
+});
+
+// -------- Toetsenbord (QWERTY + Shift 1x, met Ctrl) --------
+let shiftKeys = [];
+let shiftOn=false;
+
+(function buildKeyboard(){
+  const rows=[
+    {id:'row0',keys:["1","2","3","4","5","6","7","8","9","0","-","="]},
+    {id:'row1',keys:["q","w","e","r","t","y","u","i","o","p","[","]","\\"]},
+    {id:'row2',keys:["a","s","d","f","g","h","j","k","l",";","'"]},
+    {id:'row3',keys:["Shift","z","x","c","v","b","n","m",",",".","/","Shift"]},
+    {id:'row4',keys:["Ctrl","Space","Enter","Backspace"]}
+  ];
+  rows.forEach(r=>{
+    const row=document.getElementById(r.id);
+    r.keys.forEach(k=>{
+      let dkey=k;
+      let label=k;
+
+      if(k==="Space"){
+        dkey=" ";
+        label="⎵ Spatie";
+      }else if(k==="Enter"){
+        dkey="\n";
+        label="↵ Enter";
+      }else if(k==="Backspace"){
+        dkey="Backspace";
+        label="⌫ Backspace";
+      }else if(k==="Shift"){
+        dkey="Shift";
+        label="⇧ Shift";
+      }else if(k==="Ctrl"){
+        dkey="Ctrl";
+        label="Ctrl";
+      }else if(/[0-9]/.test(k)){
+        const top =
+          k==="1" ? "!" :
+          k==="2" ? "@" :
+          k==="3" ? "#" :
+          k==="4" ? "€" :
+          k==="5" ? "%" :
+          k==="6" ? "^" :
+          k==="7" ? "&" :
+          k==="8" ? "*" :
+          k==="9" ? "(" :
+          k==="0" ? ")" : "";
+        label = top ? top+"\n"+k : k;
+      }else if(k.length===1 && k>="a" && k<="z"){
+        label=k.toUpperCase();
+      }
+
+      const key=document.createElement('div');
+      key.className='key';
+      key.dataset.key=dkey;
+      key.textContent=label;
+      if(k==='Space') key.classList.add('space');
+      if(k==='Enter' || k==='Backspace' || k==="Shift" || k==="Ctrl") key.classList.add('wide');
+      key.addEventListener('click',()=> virtualKeyPress(dkey));
+      row.appendChild(key);
+
+      if(dkey==="Shift"){
+        shiftKeys.push(key);
+      }
+    });
+  });
+})();
+
+function setShiftActive(on){
+  shiftOn=on;
+  shiftKeys.forEach(k=>{
+    if(on) k.classList.add('hl');
+    else k.classList.remove('hl');
+  });
+}
+
+function virtualKeyPress(dkey){
+  if(currentLevel==="style") return;
+  if(dkey==="Shift"){
+    setShiftActive(!shiftOn);
+    return;
+  }
+  if(dkey==="Ctrl") return; // geen functie, alleen uiterlijk
+
+  inputEl.focus();
+  const start=inputEl.selectionStart;
+  const end=inputEl.selectionEnd;
+  let val=inputEl.value;
+  let insert="";
+
+  if(dkey==="Backspace"){
+    if(start===end && start>0){
+      inputEl.value = val.slice(0,start-1)+val.slice(end);
+      inputEl.selectionStart=inputEl.selectionEnd=start-1;
+    }else{
+      inputEl.value = val.slice(0,start)+val.slice(end);
+      inputEl.selectionStart=inputEl.selectionEnd=start;
+    }
+  }else{
+    if(dkey==="\n"){
+      insert="\n";
+    }else if(dkey.length===1 && dkey>="a" && dkey<="z"){
+      insert = shiftOn ? dkey.toUpperCase() : dkey;
+    }else if(/[0-9]/.test(dkey) && shiftOn){
+      insert =
+        dkey==="1" ? "!" :
+        dkey==="2" ? "@" :
+        dkey==="3" ? "#" :
+        dkey==="4" ? "€" :
+        dkey==="5" ? "%" :
+        dkey==="6" ? "^" :
+        dkey==="7" ? "&" :
+        dkey==="8" ? "*" :
+        dkey==="9" ? "(" :
+        dkey==="0" ? ")" :
+        dkey;
+    }else if(dkey==="/" && shiftOn){
+      insert="?";
+    }else{
+      insert=dkey;
+    }
+    inputEl.value = val.slice(0,start)+insert+val.slice(end);
+    inputEl.selectionStart=inputEl.selectionEnd=start+insert.length;
+  }
+
+  if(shiftOn && dkey!=="Shift"){
+    setShiftActive(false);
+  }
+
+  inputEl.dispatchEvent(new Event('input'));
+}
+
+// -------- Cheatsheet --------
+function icon(key){
+  const svgMap={
+    "space":'<svg viewBox="0 0 64 24"><rect x="2" y="6" width="60" height="12" rx="6" fill="#0ea5e9"/><text x="32" y="16" text-anchor="middle" font-family="sans-serif" font-size="10" fill="#fff">SPATIE</text></svg>',
+    "enter":'<svg viewBox="0 0 64 24"><path d="M2 6 h36 v6 h18" stroke="#22c55e" stroke-width="3" fill="none"/><path d="M50 9 l6 3 -6 3" fill="#22c55e"/></svg>',
+    "shift":'<svg viewBox="0 0 64 24"><path d="M32 3 l12 12 h-8 v6 h-8 v-6 h-8 z" fill="#a78bfa"/></svg>',
+    "dot":  '<svg viewBox="0 0 24 24"><circle cx="12" cy="18" r="3" fill="#0f172a"/></svg>',
+    "comma":"<svg viewBox=\'0 0 24 24\'><path d=\'M12 18 a3 3 0 1 1 0-6 c2 2 2 6-2 8\' fill=\'#0f172a\'></path></svg>",
+    "qmark":"<svg viewBox=\'0 0 24 24\'><path d=\'M9 9a3 3 0 1 1 6 0c0 3-3 3-3 5\' stroke=\'#0f172a\' stroke-width=\'2\' fill=\'none\'></path><circle cx=\'12\' cy=\'19\' r=\'1.6\' fill=\'#0f172a\'></circle></svg>",
+    "paren":"<svg viewBox=\'0 0 64 24\'><text x=\'22\' y=\'17\' font-family=\'monospace\' font-size=\'18\'> (</text><text x=\'40\' y=\'17\' font-family=\'monospace\' font-size=\'18\'>)</text></svg>",
+    "slash":"<svg viewBox=\'0 0 24 24\'><path d=\'M6 20 L18 4\' stroke=\'#0f172a\' stroke-width=\'3\'></path></svg>",
+    "at":"<svg viewBox=\'0 0 24 24\'><path d=\'M16 12a3 3 0 1 1-2-3v4c0 1 2 1 2-1 0-5-8-6-10-2-3 5 2 10 7 9\' stroke=\'#0f172a\' stroke-width=\'2\' fill=\'none\'></path></svg>",
+    "letter":"<svg viewBox=\'0 0 24 24\'><text x=\'12\' y=\'18\' text-anchor=\'middle\' font-family=\'monospace\' font-size=\'18\'>a</text></svg>",
+    "backspace":"<svg viewBox=\'0 0 64 24\'><path d=\'M10 6 L2 12 L10 18 H48 a4 4 0 0 0 4-4 a4 4 0 0 0-4-4 Z\' fill=\'#94a3b8\'></path><path d=\'M22 8 L36 16 M36 8 L22 16\' stroke=\'#1f2937\' stroke-width=\'3\'></path></svg>"
+  };
+  return svgMap[key]||"";
+}
+function cheatsChip(key,label){
+  const div=document.createElement('div');
+  div.className='chip';
+  div.dataset.key=key;
+  div.innerHTML=icon(key)+`<span>${label}</span>`;
+  return div;
+}
+function renderCheatsheet(level){
+  cheats.innerHTML="";
+  if(level==='easy'){
+    cheats.append(cheatsChip('space','Spatie — tussen woorden'));
+    cheats.append(cheatsChip('letter','Letters — kleine letters'));
+    cheats.append(cheatsChip('backspace','Backspace — foutje weghalen'));
+  }else if(level==='normal'){
+    cheats.append(cheatsChip('enter','Enter — nieuwe regel'));
+    cheats.append(cheatsChip('shift','Shift + letter = hoofdletter'));
+    cheats.append(cheatsChip('dot','Punt .'));
+    cheats.append(cheatsChip('comma','Komma ,'));
+    cheats.append(cheatsChip('space','Spatie'));
+    cheats.append(cheatsChip('backspace','Backspace — foutje weghalen'));
+  }else if(level==='hard'){
+    cheats.append(cheatsChip('enter','Enter — nieuwe regel'));
+    cheats.append(cheatsChip('shift','Shift + toets = speciaal teken'));
+    cheats.append(cheatsChip('paren','Shift + 9/0 = ( )'));
+    cheats.append(cheatsChip('qmark','Shift + / = vraagteken ?'));
+    cheats.append(cheatsChip('slash','Schuine streep /'));
+    cheats.append(cheatsChip('at','Shift + 2 = @'));
+    cheats.append(cheatsChip('space','Spatie'));
+    cheats.append(cheatsChip('backspace','Backspace — foutje weghalen'));
+  }else if(level==='style'){
+    cheats.append(cheatsChip('letter','Woorden selecteren'));
+  }
+}
+function setCheatActive(which){
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  if(!which || which.length===0) return;
+  which.forEach(k=>{
+    const el=Array.from(document.querySelectorAll('.chip')).find(c=>c.dataset.key===k);
+    if(el) el.classList.add('on');
+  });
+}
+function highlightNext(nextCh){
+  let cheatKeys=[];
+  if(!nextCh){ setCheatActive([]); return; }
+  if(nextCh===" ") cheatKeys.push('space');
+  if(nextCh==="\n") cheatKeys.push('enter');
+  if(nextCh===".") cheatKeys.push('dot');
+  if(nextCh===",") cheatKeys.push('comma');
+  if(nextCh==="?") cheatKeys.push('qmark');
+  if(nextCh==="/") cheatKeys.push('slash');
+  if(nextCh==="@") cheatKeys.push('at');
+  if(nextCh==="(" || nextCh===")") cheatKeys.push('paren');
+  if(nextCh>="A" && nextCh<="Z") cheatKeys.push('shift');
+  setCheatActive(cheatKeys);
+}
+
+// -------- Render doeltekst + chips --------
+function renderProgress(){
+  const container=document.createElement('div');
+  let line=document.createElement('div');
+  for(let i=0;i<target.length;i++){
+    const ch=target[i];
+    if(ch==="\n"){
+      container.appendChild(line);
+      line=document.createElement('div');
+      continue;
+    }
+    const span=document.createElement('span');
+    span.className='glyph';
+    span.textContent=ch;
+    if(i===0) span.classList.add('next');
+    line.appendChild(span);
+  }
+  container.appendChild(line);
+  typedLine.innerHTML="";
+  typedLine.appendChild(container);
+
+  targetLines=target.split("\n");
+  lineChips.innerHTML="";
+  lineChipsEls=targetLines.map((_,i)=>{
+    const el=document.createElement('div');
+    el.className='linechip pending';
+    el.textContent=(i+1);
+    lineChips.appendChild(el);
+    return el;
+  });
+  linesOK.textContent=`0/${targetLines.length}`;
+  highlightNext(target[0]);
+}
+
+// -------- Timer & stats --------
+function resetMetricsOnly(){
+  clearInterval(timer); started=false; inputEl.value=""; totalTyped=0;
+  timeEl.textContent="0s"; wpmEl.textContent="0"; accEl.textContent="0%"; errEl.textContent="0";
+  updateLineChecks("");
+}
+function updateTimer(){
+  if(!started) return;
+  const secs=Math.floor((Date.now()-startTime)/1000);
+  timeEl.textContent="0s".replace("0",secs);
+  const words=totalTyped/5;
+  const minutes=Math.max(secs/60,1e-6);
+  wpmEl.textContent=Math.round(words/minutes);
+}
+
+// -------- Vergelijken --------
+function updateLineChecks(typedNorm){
+  if(targetLines.length===0){ linesOK.textContent="0/0"; return; }
+  const typedLines=typedNorm.split("\n");
+  let ok=0;
+  for(let i=0;i<targetLines.length;i++){
+    const good=typedLines[i]===targetLines[i];
+    if(good){
+      lineChipsEls[i].classList.add('ok');
+      lineChipsEls[i].classList.remove('pending');
+      ok++;
+    }else{
+      lineChipsEls[i].classList.add('pending');
+      lineChipsEls[i].classList.remove('ok');
+    }
+  }
+  linesOK.textContent=`${ok}/${targetLines.length}`;
+}
+
+function compareAndRender(){
+  let typed=normalizeInput(inputEl.value);
+  if(currentLevel==='easy'){
+    typed=typed.replace(/\n/g," ").replace(/\s+/g," ");
+  }
+  totalTyped=typed.length;
+
+  const compTarget=(currentLevel==='easy') ? EASY_WORDS : target;
+  let correct=0, wrong=0;
+  const nextIndex=typed.length;
+
+  const flatSpans=Array.from(typedLine.querySelectorAll('.glyph'));
+  for(let i=0;i<flatSpans.length;i++){
+    const span=flatSpans[i];
+    const expected=compTarget[i];
+    const got=typed[i];
+    span.classList.remove('correct','wrong','next');
+    if(i<typed.length){
+      if(got===expected){ span.classList.add('correct'); correct++; }
+      else{ span.classList.add('wrong'); wrong++; }
+    }else if(i===nextIndex){
+      span.classList.add('next');
+    }
+  }
+
+  const acc= totalTyped>0 ? Math.round((correct/totalTyped)*100) : 0;
+  currentAcc = acc;
+  accEl.textContent=acc+"%";
+  errEl.textContent=wrong;
+
+  const nextCh=compTarget[nextIndex] || null;
+  highlightNext(nextCh);
+
+  if(currentLevel!=='easy'){ updateLineChecks(typed); }
+
+  if(typed===compTarget){
+    const secs=(Date.now()-startTime)/1000;
+    if(['easy','normal','hard'].includes(currentLevel)){
+      levelStats[currentLevel]={done:true,time:secs,acc:acc,errors:wrong};
+    }
+    clearInterval(timer); started=false; inputEl.disabled=true;
+    if(currentLevel==='easy'){
+      btnNormal.disabled=false; btnNormal.classList.remove('disabled');
+    }
+    if(currentLevel==='normal'){
+      btnHard.disabled=false; btnHard.classList.remove('disabled');
+    }
+    if(currentLevel==='hard'){
+      btnStyle.disabled=false; btnStyle.classList.remove('disabled');
+    }
+    shootConfetti();
+  }
+}
+
+inputEl.addEventListener('input',()=>{
+  if(!started){
+    started=true;
+    startTime=Date.now();
+    timer=setInterval(updateTimer,200);
+  }
+  compareAndRender();
+});
+
+// -------- Volgend level --------
+function goNextLevel(){
+  if(currentLevel==='easy'){
+    btnNormal.disabled=false; btnNormal.classList.remove('disabled');
+    chooseLevel('normal');
+  }else if(currentLevel==='normal'){
+    btnHard.disabled=false; btnHard.classList.remove('disabled');
+    chooseLevel('hard');
+  }else if(currentLevel==='hard'){
+    btnStyle.disabled=false; btnStyle.classList.remove('disabled');
+    chooseLevel('style');
+  }else if(currentLevel==='style'){
+    chooseLevel('easy');
+  }
+}
+
+// -------- Confetti --------
+const confettiCanvas=document.getElementById('confetti');
+const ctx=confettiCanvas.getContext('2d');
+let confettiPieces=[];
+
+function resizeCanvas(){
+  confettiCanvas.width=innerWidth;
+  confettiCanvas.height=innerHeight;
+}
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();
+
+function shootConfetti(){
+  const colors=['#f97316','#22c55e','#3b82f6','#eab308','#a78bfa','#ef4444'];
+  for(let i=0;i<180;i++){
+    confettiPieces.push({
+      x:Math.random()*confettiCanvas.width,
+      y:-10,
+      vx:(Math.random()-0.5)*3,
+      vy:Math.random()*3+2,
+      size:Math.random()*6+3,
+      color:colors[Math.floor(Math.random()*colors.length)],
+      rot:Math.random()*Math.PI,
+      vr:(Math.random()-0.5)*0.2,
+      life:120+Math.random()*60
+    });
+  }
+}
+function confettiLoop(){
+  ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+  for(let i=confettiPieces.length-1;i>=0;i--){
+    const p=confettiPieces[i];
+    p.x+=p.vx;
+    p.y+=p.vy;
+    p.rot+=p.vr;
+    p.vy+=0.03;
+    p.life--;
+    ctx.save();
+    ctx.translate(p.x,p.y);
+    ctx.rotate(p.rot);
+    ctx.fillStyle=p.color;
+    ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);
+    ctx.restore();
+    if(p.y>confettiCanvas.height+20 || p.life<=0) confettiPieces.splice(i,1);
+  }
+  requestAnimationFrame(confettiLoop);
+}
+confettiLoop();
+
+// -------- Kleur typen + score --------
+function initStyleScoreboard(){
+  styleSentWordTotal = [];
+  styleSentWordChanged = [];
+  styleSentChips = [];
+  styleLineChips.innerHTML="";
+  for(let i=0;i<STYLE_SENTENCES.length;i++){
+    styleSentWordTotal.push(0);
+    styleSentWordChanged.push(0);
+    const chip=document.createElement('div');
+    chip.className='linechip pending';
+    chip.textContent=(i+1);
+    styleLineChips.appendChild(chip);
+    styleSentChips.push(chip);
+  }
+  updateStyleSentenceChips();
+}
+function updateStyleSentenceChips(){
+  const total=STYLE_SENTENCES.length;
+  let done=0;
+  let partialCount=0;
+  for(let i=0;i<total;i++){
+    const chip=styleSentChips[i];
+    const tot=styleSentWordTotal[i];
+    const chg=styleSentWordChanged[i];
+    chip.classList.remove('ok','partial','pending');
+    if(tot===0 || chg===0){
+      chip.classList.add('pending');
+    }else if(chg<tot){
+      chip.classList.add('partial');
+      partialCount++;
+    }else{
+      chip.classList.add('ok');
+      done++;
+    }
+  }
+  const percent = Math.round(done/total*100);
+  styleProgressText.textContent = `Zinnen af: ${done}/${total} (${percent}%)`;
+  levelStats.style.percent = percent;
+  levelStats.style.done = (done===total && total>0);
+}
+function markWordChanged(span){
+  const sIndex=parseInt(span.dataset.sent||"-1",10);
+  if(isNaN(sIndex) || sIndex<0) return;
+  if(span.dataset.special!=="1") return; // alleen speciale woorden tellen
+  if(span.dataset.changed!=="1"){
+    span.dataset.changed="1";
+    styleSentWordChanged[sIndex]++;
+    updateStyleSentenceChips();
+  }
+}
+function initStyleArea(){
+  styleArea.innerHTML="";
+  initStyleScoreboard();
+
+  STYLE_SENTENCES.forEach((sentence, sIndex)=>{
+    const specials = (STYLE_SPECIAL_WORDS[sIndex] || []).map(w=>w.toLowerCase());
+    const tokens=sentence.split(/(\s+)/);
+    tokens.forEach(tok=>{
+      if(tok.trim()===""){
+        styleArea.appendChild(document.createTextNode(tok));
+      }else{
+        const span=document.createElement('span');
+        span.textContent=tok;
+        span.style.padding='2px 3px';
+        span.style.borderRadius='6px';
+        span.dataset.sent=String(sIndex);
+        span.dataset.changed="0";
+
+        const norm = tok.toLowerCase().replace(/[.,!?]/g,"");
+        if(specials.includes(norm)){
+          span.dataset.special="1";
+          styleSentWordTotal[sIndex]++;
+        }else{
+          span.dataset.special="0";
+        }
+
+        span.addEventListener('click',()=> selectWord(span));
+        styleArea.appendChild(span);
+      }
+    });
+    styleArea.appendChild(document.createElement('br'));
+  });
+  updateStyleSentenceChips();
+}
+let currentSelected=null;
+function selectWord(el){
+  if(currentSelected) currentSelected.classList.remove('selected');
+  currentSelected=el;
+  currentSelected.classList.add('selected');
+}
+document.querySelectorAll('.swatch').forEach(s=> s.addEventListener('click',()=>{
+  if(currentSelected){
+    currentSelected.style.color=s.dataset.color;
+    markWordChanged(currentSelected);
+  }
+}));
+document.querySelectorAll('.sizeBtn').forEach(b=> b.addEventListener('click',()=>{
+  if(!currentSelected) return;
+  if(b.dataset.bold==='toggle'){
+    currentSelected.style.fontWeight=currentSelected.style.fontWeight==='900'?'400':'900';
+  }else{
+    const size=parseInt(b.dataset.size,10);
+    currentSelected.style.fontSize=size+'px';
+  }
+  markWordChanged(currentSelected);
+}));
+
+// -------- Eindresultaat (alle levels) --------
+function formatTime(secs){
+  secs=Math.round(secs);
+  if(secs<60) return `${secs}s`;
+  const m=Math.floor(secs/60);
+  const s=secs%60;
+  return `${m}m ${s}s`;
+}
+function showEndResult(){
+  const totalStyle=STYLE_SENTENCES.length;
+  let doneStyle=0;
+  for(let i=0;i<totalStyle;i++){
+    if(styleSentWordTotal[i]>0 && styleSentWordChanged[i]===styleSentWordTotal[i]) doneStyle++;
+  }
+  const stylePct = totalStyle>0 ? Math.round(doneStyle/totalStyle*100) : 0;
+  levelStats.style.percent = stylePct;
+  levelStats.style.done = (doneStyle===totalStyle && totalStyle>0);
+
+  const accs=[];
+  ['easy','normal','hard'].forEach(l=>{
+    if(levelStats[l].done) accs.push(levelStats[l].acc);
+  });
+  let avgAcc = accs.length ? accs.reduce((a,b)=>a+b,0)/accs.length : 0;
+
+  const metrics=[];
+  if(avgAcc>0) metrics.push(avgAcc);
+  if(stylePct>0) metrics.push(stylePct);
+  const overallPct = metrics.length ? metrics.reduce((a,b)=>a+b,0)/metrics.length : 0;
+  let grade = overallPct>0 ? overallPct/10 : 0;
+  if(overallPct>0){
+    grade = Math.round(grade*10)/10;
+    if(grade<1) grade=1;
+    if(grade>10) grade=10;
+  }
+
+  resultGrade.textContent = overallPct>0 ? grade.toFixed(1).replace('.',',') : "--";
+
+  let label="Begin met oefenen!";
+  if(overallPct>0){
+    if(grade>=9) label="Topper! Fantastisch getypt!";
+    else if(grade>=8) label="Heel goed gedaan!";
+    else if(grade>=7) label="Mooi gewerkt!";
+    else label="Goed geoefend, blijf oefenen!";
+  }
+  resultLabel.textContent=label;
+
+  function levelLine(key,label){
+    const st=levelStats[key];
+    if(!st.done) return `<strong>${label}:</strong> nog niet afgerond.<br>`;
+    return `<strong>${label}:</strong> nauwkeurigheid ${st.acc}% · tijd ${formatTime(st.time)} · fouten ${st.errors}<br>`;
+  }
+
+  let details="";
+  details += levelLine('easy','Makkelijk');
+  details += levelLine('normal','Normaal');
+  details += levelLine('hard','Moeilijk');
+
+  if(totalStyle===0){
+    details += `<strong>Kleur typen:</strong> nog niet gestart.<br>`;
+  }else{
+    details += `<strong>Kleur typen:</strong> ${stylePct}% van de zinnen helemaal aangepast (groene bolletjes).<br>`;
+  }
+
+  if(overallPct===0){
+    details += `<br>Tip: maak eerst Makkelijk af, probeer daarna Normaal en Moeilijk, en sluit af met Kleur typen.`;
+  }else{
+    details += `<br>Tip: kijk vooral naar de levels waar je nauwkeurigheid lager is, daar kun je nog extra groeien.`;
+  }
+
+  resultDetails.innerHTML=details;
+  resultOverlay.style.display='flex';
+  if(overallPct>0) shootConfetti();
+}
+
+// -------- Level wissel --------
+function setTarget(newText){
+  target=newText;
+  renderProgress();
+  resetMetricsOnly();
+  inputEl.disabled=false;
+  inputEl.focus();
+  renderCheatsheet(currentLevel);
+}
+function chooseLevel(level){
+  currentLevel=level;
+  setShiftActive(false);
+
+  if(level==='style'){
+    stylePanel.style.display='block';
+    document.getElementById('typePanel').style.display='none';
+    initStyleArea();
+    hintEl.innerHTML="Kleur typen: maak de witte tekst hetzelfde als de tekst in het groene vlak.";
+    inputEl.disabled=true;
+    return;
+  }else{
+    stylePanel.style.display='none';
+    document.getElementById('typePanel').style.display='block';
+    inputEl.disabled=false;
+  }
+
+  if(level==='easy'){
+    setTarget(EASY_WORDS);
+    hintEl.innerHTML="Makkelijk: typ <strong>alleen woorden</strong> met <strong>spaties</strong>. Geen leestekens.";
+  }else if(level==='normal'){
+    setTarget(NORMAL_TEXT);
+    hintEl.innerHTML="Normaal: gebruik <strong>Shift + letter = hoofdletter</strong>, <strong>punten</strong> en <strong>komma's</strong>. 10 regels — gebruik <strong>Enter</strong>.";
+  }else if(level==='hard'){
+    setTarget(HARD_TEXT);
+    hintEl.innerHTML="Moeilijk: gebruik <strong>( )</strong>, <strong>?</strong>, <strong>/</strong> en <strong>@</strong>. 10 regels (Enter).";
+  }
+}
+
+// Init
+renderCheatsheet('easy');
+chooseLevel('easy');
+</script>
+</body>
+</html>
