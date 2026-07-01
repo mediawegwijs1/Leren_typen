@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Typen oefenen — v4.2 Geoptimaliseerd</title>
+<title>Typen oefenen — v5.0 Geoptimaliseerd</title>
 <style>
   :root{
     --bg:#f6fbff; --paper:#ffffff; --line:#e5e7eb; --ink:#0f172a;
@@ -259,7 +259,7 @@
   <div class="ribbon">
     <div class="brand">
       <span class="logo">🎉</span>
-      <span>Typen oefenen — v4.2 Geoptimaliseerd</span>
+      <span>Typen oefenen — v5.0 Geoptimaliseerd</span>
     </div>
   </div>
 
@@ -307,49 +307,26 @@
 
     <div class="panel" id="stylePanel" style="display:none">
       <div class="typeHeader">
-        <h3>3) Kleur typen</h3>
-        <button class="btn btnResetPrimary" id="btnResetStyle">Level opnieuw</button>
+        <h3>3) Kleur typen (Stap 2)</h3>
+        <button class="btn btnResetPrimary" id="btnResetStyle">Kleuren resetten</button>
       </div>
       <div class="hint">
-        In het groene vlak zie je een voorbeeldtekst met hoofdletters, punten en gekleurde woorden.
-        In het witte vlak staat dezelfde tekst normaal. Maak de witte tekst hetzelfde als het voorbeeld.
+        Je hebt de tekst perfect getypt! Maak nu de witte tekst hetzelfde als de tekst in het groene vlak hieronder.
+        Klik op een woord en gebruik de knoppen om de kleur en grootte te veranderen.
       </div>
 
       <div id="styleTarget" class="textline" style="margin-top:8px;">
-        <span style="font-size:26px; color:#16a34a; font-weight:900;">Sam</span> loopt in het
-        <span style="color:#15803d;">bos</span>.
-        Zij <span style="font-size:24px; color:#0ea5e9;">ziet</span> een grote
-        <span style="font-size:26px; color:#a855f7; font-weight:900;">boom</span> en een
-        <span style="color:#ef4444; font-weight:900;">rode</span> vogel.
-        Op de tak zit een <span style="font-size:18px; color:#f97316;">rups</span>.
-        De <span style="color:#facc15;">zon</span> schijnt op het
-        <span style="color:#22c55e;">gras</span>.
-        <span style="color:#16a34a; font-weight:900;">Sam</span> draagt een
-        <span style="color:#ef4444; font-weight:900;">rode</span> jas.
-        Zij ziet een <span style="color:#eab308;">gele</span> bloem.
-        Haar <span style="font-weight:900;">grote</span> hond rent
-        <span style="font-size:24px;">blij</span> rond.
-        Zij hoort een <span style="color:#3b82f6;">bij</span> zoemen.
-        Er ligt een grote <span style="font-size:22px; font-weight:900;">steen</span> op het pad.
-        <span style="color:#16a34a; font-weight:900;">Sam</span> gaat weer naar huis.
-        Onderweg zwaait ze naar een vriend.
-        In de verte ziet ze de school.
-      </div>
-
-      <div class="hint" style="margin-top:8px;">
-        Klik in de witte tekst hieronder op een woord, en verander daarna kleur, grootte of maak het vet.
-        Alleen de woorden die in het voorbeeld extra opvallen, hoeven aangepast te worden.
-      </div>
+        </div>
 
       <div class="toolbar" style="margin-top:8px">
         <div class="swatch" data-color="#ef4444" style="background:#ef4444;width:28px;height:28px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.08);cursor:pointer"></div>
         <div class="swatch" data-color="#3b82f6" style="background:#3b82f6;width:28px;height:28px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.08);cursor:pointer"></div>
-        <div class="swatch" data-color="#10b981" style="background:#10b981;width:28px;height:28px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.08);cursor:pointer"></div>
-        <div class="swatch" data-color="#f59e0b" style="background:#f59e0b;width:28px;height:28px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.08);cursor:pointer"></div>
-        <div class="swatch" data-color="#8b5cf6" style="background:#8b5cf6;width:28px;height:28px;border-radius:8px;border:2px solid:#fff;box-shadow:0 0 0 2px rgba(0,0,0,.08);cursor:pointer"></div>
+        <div class="swatch" data-color="#22c55e" style="background:#22c55e;width:28px;height:28px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.08);cursor:pointer"></div>
+        <div class="swatch" data-color="#facc15" style="background:#facc15;width:28px;height:28px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.08);cursor:pointer"></div>
+        <div class="swatch" data-color="#f97316" style="background:#f97316;width:28px;height:28px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.08);cursor:pointer"></div>
+        <div class="swatch" data-color="#a855f7" style="background:#a855f7;width:28px;height:28px;border-radius:8px;border:2px solid #fff;box-shadow:0 0 0 2px rgba(0,0,0,.08);cursor:pointer"></div>
         <button class="btn sizeBtn" data-size="16">A-</button>
         <button class="btn sizeBtn" data-size="20">A</button>
-        <button class="btn sizeBtn" data-size="28">A+</button>
         <button class="btn sizeBtn" data-size="36">A++</button>
         <button class="btn sizeBtn" data-bold="toggle"><strong>Vet</strong></button>
       </div>
@@ -406,37 +383,32 @@ const HARD_TEXT = [
   "Klaar? Mooi! (Goed gedaan!)"
 ].join("\n");
 
-// kleur-typen tekst
+// Kleur-typen teksten
 const STYLE_TEXT = [
-  "Sam loopt in het bos.",
-  "Zij ziet een grote boom en een rode vogel.",
-  "Op de tak zit een rups.",
-  "De zon schijnt op het gras.",
-  "Sam draagt een rode jas.",
-  "Zij ziet een gele bloem.",
-  "Haar grote hond rent blij rond.",
-  "Zij hoort een bij zoemen.",
-  "Er ligt een grote steen op het pad.",
-  "Sam gaat weer naar huis.",
-  "Onderweg zwaait ze naar een vriend.",
-  "In de verte ziet ze de school."
+  "De zon is geel en schijnt op het groene gras.",
+  "Er rijdt een grote rode auto voorbij.",
+  "In de lucht vliegt een klein blauw vogeltje.",
+  "De oranje kat slaapt op een grote steen.",
+  "Een kleine paarse bloem ruikt zoet."
 ].join("\n");
 const STYLE_SENTENCES = STYLE_TEXT.split("\n");
 
-// woorden die in elke zin aangepast moeten worden
+// Kleur-typen HTML Target (wordt pas getoond als het typen klaar is)
+const STYLE_TARGET_HTML = `
+  De zon is <span style="color:#facc15; font-weight:900;">geel</span> en schijnt op het <span style="color:#22c55e;">groene</span> gras.<br>
+  Er rijdt een <span style="font-size:36px; font-weight:900;">grote</span> <span style="color:#ef4444;">rode</span> auto voorbij.<br>
+  In de lucht vliegt een <span style="font-size:16px;">klein</span> <span style="color:#3b82f6;">blauw</span> vogeltje.<br>
+  De <span style="color:#f97316;">oranje</span> kat slaapt op een <span style="font-size:36px;">grote</span> steen.<br>
+  Een <span style="font-size:16px;">kleine</span> <span style="color:#a855f7;">paarse</span> bloem ruikt zoet.
+`;
+
+// Woorden die per zin aangepast moeten worden (kleine letters, zonder leestekens)
 const STYLE_SPECIAL_WORDS = [
-  ["sam","bos"],
-  ["ziet","boom","rode"],
-  ["rups"],
-  ["zon","gras"],
-  ["sam","rode"],
-  ["gele"],
-  ["grote","blij"],
-  ["bij"],
-  ["steen"],
-  ["sam"],
-  ["vriend"],
-  ["school"]
+  ["geel","groene"],
+  ["grote","rode"],
+  ["klein","blauw"],
+  ["oranje","grote"],
+  ["kleine","paarse"]
 ];
 
 // -------- State --------
@@ -447,10 +419,11 @@ let target = "";
 let started=false, startTime=0, timer=null;
 let totalTyped=0;
 let currentLevel="easy";
+let stylePhase="typing"; // "typing" of "coloring"
 let targetLines=[];
 let lineChipsEls=[];
 let currentAcc=0;
-let lastGlyphTop = 0; // NIEUW: Houdt bij op welke regel we typen
+let lastGlyphTop = 0; // Houdt bij op welke regel we typen
 
 // kleur-typen score per zin
 let styleSentWordTotal=[];
@@ -495,7 +468,14 @@ const resultDetails=document.getElementById('resultDetails');
 document.getElementById('closeResult').addEventListener('click',()=> resultOverlay.style.display='none');
 
 document.getElementById('btnReset').addEventListener('click',()=> chooseLevel(currentLevel));
-btnResetStyle.addEventListener('click',()=> chooseLevel('style'));
+
+btnResetStyle.addEventListener('click',()=> {
+  if (stylePhase === 'coloring') {
+    initStyleArea(); // Reset alleen de kleuren als ze daar al mee bezig zijn
+  } else {
+    chooseLevel('style'); // Reset het hele level (inclusief het typen)
+  }
+});
 
 btnEasy.addEventListener('click',()=> chooseLevel('easy'));
 btnNormal.addEventListener('click',()=>{ if(!btnNormal.disabled) chooseLevel('normal'); });
@@ -504,14 +484,12 @@ btnStyle.addEventListener('click',()=>{ if(!btnStyle.disabled) chooseLevel('styl
 btnNextLevel.addEventListener('click',goNextLevel);
 
 // -------- Interactie & Anti-Cheat --------
-// Haal het native toetsenbord omhoog bij een klik op het invoerveld
 document.getElementById('typePanel').addEventListener('click', () => {
-  if (currentLevel !== 'style') {
+  if (currentLevel !== 'style' || stylePhase === 'typing') {
     inputEl.focus();
   }
 });
 
-// Voorkom valsspelen door plakken te blokkeren
 inputEl.addEventListener('paste', (e) => {
   e.preventDefault();
   alert("Niet spieken! Je moet de woorden echt zelf typen. 😉");
@@ -554,7 +532,7 @@ function renderCheatsheet(level){
     cheats.append(cheatsChip('comma','Komma ,'));
     cheats.append(cheatsChip('space','Spatie'));
     cheats.append(cheatsChip('backspace','Backspace — foutje weghalen'));
-  }else if(level==='hard'){
+  }else if(level==='hard' || level==='style'){
     cheats.append(cheatsChip('enter','Enter — nieuwe regel'));
     cheats.append(cheatsChip('shift','Shift + toets = speciaal teken'));
     cheats.append(cheatsChip('paren','Shift + 9/0 = ( )'));
@@ -563,8 +541,6 @@ function renderCheatsheet(level){
     cheats.append(cheatsChip('at','Shift + 2 = @'));
     cheats.append(cheatsChip('space','Spatie'));
     cheats.append(cheatsChip('backspace','Backspace — foutje weghalen'));
-  }else if(level==='style'){
-    cheats.append(cheatsChip('letter','Woorden selecteren'));
   }
 }
 function setCheatActive(which){
@@ -590,7 +566,7 @@ function highlightNext(nextCh){
   setCheatActive(cheatKeys);
 }
 
-// -------- Render doeltekst + chips (met \n fix) --------
+// -------- Render doeltekst + chips --------
 function renderProgress(){
   const container=document.createElement('div');
   let line=document.createElement('div');
@@ -702,7 +678,7 @@ function compareAndRender(){
 
   if(currentLevel!=='easy'){ updateLineChecks(typed); }
 
-  /* --- FIX V4.2: Scroll alleen als de verticale positie (regel) verandert --- */
+  /* FIX V4.2: Scroll alleen als de verticale positie (regel) verandert */
   const nextGlyph = typedLine.querySelector('.glyph.next');
   if (nextGlyph) {
     if (nextGlyph.offsetTop !== lastGlyphTop) {
@@ -710,10 +686,18 @@ function compareAndRender(){
       lastGlyphTop = nextGlyph.offsetTop;
     }
   }
-  /* -------------------------------------------------------------------------- */
 
   if(typed===compTarget){
     const secs=(Date.now()-startTime)/1000;
+    
+    // NIEUW: Als we in Level 3 zitten en het typen is klaar, start dan de Kleur-fase
+    if(currentLevel === 'style' && stylePhase === 'typing') {
+      stylePhase = 'coloring';
+      shootConfetti(); 
+      startStylePhase();
+      return; 
+    }
+
     if(['easy','normal','hard'].includes(currentLevel)){
       levelStats[currentLevel]={done:true,time:secs,acc:acc,errors:wrong};
     }
@@ -806,6 +790,13 @@ function confettiLoop(){
 confettiLoop();
 
 // -------- Kleur typen + score --------
+function startStylePhase() {
+  document.getElementById('typePanel').style.display='none';
+  stylePanel.style.display='block';
+  document.getElementById('styleTarget').innerHTML = STYLE_TARGET_HTML;
+  initStyleArea();
+}
+
 function initStyleScoreboard(){
   styleSentWordTotal = [];
   styleSentWordChanged = [];
@@ -822,6 +813,7 @@ function initStyleScoreboard(){
   }
   updateStyleSentenceChips();
 }
+
 function updateStyleSentenceChips(){
   const total=STYLE_SENTENCES.length;
   let done=0;
@@ -846,6 +838,7 @@ function updateStyleSentenceChips(){
   levelStats.style.percent = percent;
   levelStats.style.done = (done===total && total>0);
 }
+
 function markWordChanged(span){
   const sIndex=parseInt(span.dataset.sent||"-1",10);
   if(isNaN(sIndex) || sIndex<0) return;
@@ -856,6 +849,7 @@ function markWordChanged(span){
     updateStyleSentenceChips();
   }
 }
+
 function initStyleArea(){
   styleArea.innerHTML="";
   initStyleScoreboard();
@@ -890,18 +884,21 @@ function initStyleArea(){
   });
   updateStyleSentenceChips();
 }
+
 let currentSelected=null;
 function selectWord(el){
   if(currentSelected) currentSelected.classList.remove('selected');
   currentSelected=el;
   currentSelected.classList.add('selected');
 }
+
 document.querySelectorAll('.swatch').forEach(s=> s.addEventListener('click',()=>{
   if(currentSelected){
     currentSelected.style.color=s.dataset.color;
     markWordChanged(currentSelected);
   }
 }));
+
 document.querySelectorAll('.sizeBtn').forEach(b=> b.addEventListener('click',()=>{
   if(!currentSelected) return;
   if(b.dataset.bold==='toggle'){
@@ -998,18 +995,18 @@ function chooseLevel(level){
   currentLevel=level;
 
   if(level==='style'){
-    stylePanel.style.display='block';
-    document.getElementById('typePanel').style.display='none';
-    initStyleArea();
-    hintEl.innerHTML="Kleur typen: maak de witte tekst hetzelfde als de tekst in het groene vlak.";
-    inputEl.disabled=true;
-    return;
-  }else{
+    stylePhase = 'typing';
     stylePanel.style.display='none';
     document.getElementById('typePanel').style.display='block';
     inputEl.disabled=false;
     
-    // Zorg ervoor dat het invoerveld focus krijgt voor een snelle start op tablets
+    setTimeout(() => inputEl.focus(), 50); 
+    setTarget(STYLE_TEXT);
+    hintEl.innerHTML="Kleur typen (Stap 1): Typ eerst de tekst foutloos over. Pas daarna verschijnt de magische kleuren-tool!";
+  }else{
+    stylePanel.style.display='none';
+    document.getElementById('typePanel').style.display='block';
+    inputEl.disabled=false;
     setTimeout(() => inputEl.focus(), 50); 
   }
 
