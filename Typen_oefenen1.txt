@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Typen oefenen — v4.1 Geoptimaliseerd</title>
+<title>Typen oefenen — v4.2 Geoptimaliseerd</title>
 <style>
   :root{
     --bg:#f6fbff; --paper:#ffffff; --line:#e5e7eb; --ink:#0f172a;
@@ -15,7 +15,7 @@
     font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
     background:var(--bg);
     color:var(--ink);
-    padding-bottom: 50vh; /* <-- FIX: Ruimte voor het tablettoetsenbord */
+    padding-bottom: 50vh; /* Ruimte voor het tablettoetsenbord */
   }
   .ribbon{
     display:flex;
@@ -259,7 +259,7 @@
   <div class="ribbon">
     <div class="brand">
       <span class="logo">🎉</span>
-      <span>Typen oefenen — v4.1 Geoptimaliseerd</span>
+      <span>Typen oefenen — v4.2 Geoptimaliseerd</span>
     </div>
   </div>
 
@@ -450,6 +450,7 @@ let currentLevel="easy";
 let targetLines=[];
 let lineChipsEls=[];
 let currentAcc=0;
+let lastGlyphTop = 0; // NIEUW: Houdt bij op welke regel we typen
 
 // kleur-typen score per zin
 let styleSentWordTotal=[];
@@ -635,6 +636,7 @@ function renderProgress(){
 function resetMetricsOnly(){
   clearInterval(timer); started=false; inputEl.value=""; totalTyped=0;
   timeEl.textContent="0s"; wpmEl.textContent="0"; accEl.textContent="0%"; errEl.textContent="0";
+  lastGlyphTop = 0; // RESET positie tracker
   updateLineChecks("");
 }
 function updateTimer(){
@@ -700,12 +702,15 @@ function compareAndRender(){
 
   if(currentLevel!=='easy'){ updateLineChecks(typed); }
 
-  /* --- FIX: Scroll de actieve letter naar het midden van het scherm --- */
+  /* --- FIX V4.2: Scroll alleen als de verticale positie (regel) verandert --- */
   const nextGlyph = typedLine.querySelector('.glyph.next');
   if (nextGlyph) {
-    nextGlyph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (nextGlyph.offsetTop !== lastGlyphTop) {
+      nextGlyph.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      lastGlyphTop = nextGlyph.offsetTop;
+    }
   }
-  /* -------------------------------------------------------------------- */
+  /* -------------------------------------------------------------------------- */
 
   if(typed===compTarget){
     const secs=(Date.now()-startTime)/1000;
