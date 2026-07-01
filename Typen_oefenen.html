@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Typen oefenen — v5.0 Geoptimaliseerd</title>
+<title>Typen oefenen — v5.1 Geoptimaliseerd</title>
 <style>
   :root{
     --bg:#f6fbff; --paper:#ffffff; --line:#e5e7eb; --ink:#0f172a;
@@ -259,7 +259,7 @@
   <div class="ribbon">
     <div class="brand">
       <span class="logo">🎉</span>
-      <span>Typen oefenen — v5.0 Geoptimaliseerd</span>
+      <span>Typen oefenen — v5.1 Geoptimaliseerd</span>
     </div>
   </div>
 
@@ -678,14 +678,22 @@ function compareAndRender(){
 
   if(currentLevel!=='easy'){ updateLineChecks(typed); }
 
-  /* FIX V4.2: Scroll alleen als de verticale positie (regel) verandert */
+  /* --- FIX V5.1: Laat de onzichtbare textarea de actieve letter volgen --- */
   const nextGlyph = typedLine.querySelector('.glyph.next');
   if (nextGlyph) {
-    if (nextGlyph.offsetTop !== lastGlyphTop) {
+    // 1. We plakken het onzichtbare tekstvak exact op de huidige letter.
+    // De tablet (en het ingebouwde toetsenbord) zal nu uit ZICHZELF 
+    // altijd zorgen dat deze specifieke hoogte goed in beeld blijft!
+    inputEl.style.top = nextGlyph.offsetTop + 'px';
+    
+    // 2. Extra vangnet: Zodra we een behoorlijk stuk naar beneden gaan, 
+    // sturen we toch nog even een vloeiend scroll-signaal.
+    if (Math.abs(nextGlyph.offsetTop - lastGlyphTop) > 10) {
       nextGlyph.scrollIntoView({ behavior: 'smooth', block: 'center' });
       lastGlyphTop = nextGlyph.offsetTop;
     }
   }
+  /* ------------------------------------------------------------------------ */
 
   if(typed===compTarget){
     const secs=(Date.now()-startTime)/1000;
