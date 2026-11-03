@@ -484,7 +484,7 @@
               <span><i style="background:#f59e0b"></i>wpm</span>
               <span><i style="background:#94a3b8"></i>rauw</span>
               <span id="spLegendGhost"><i style="background:#8b5cf6"></i>👻 vorige ronde</span>
-              <span><b style="color:#ef4444">✕</b> fouten</span>
+              <span><b style="color:#ef4444">✕</b> fout (op dat moment)</span>
             </div>
           </div>
         </div>
@@ -1064,7 +1064,7 @@ const SpeedGame = (function(){
     g.clearRect(0,0,W,H);
     const data=run.history, gdata=prev ? prev.history : [];
     if(!data.length) return;
-    const pad={l:52,r:40,t:12,b:30};
+    const pad={l:52,r:20,t:14,b:30};
     const maxS=Math.max(data[data.length-1].s, gdata.length ? gdata[gdata.length-1].s : 0, 1);
     const minS=1;
     // rauwe snelheid per seconde uitmiddelen over 3 seconden zodat de lijn rustiger is
@@ -1074,10 +1074,8 @@ const SpeedGame = (function(){
     });
     let maxY=Math.max(10, ...data.map((d,i)=>Math.max(d.wpm,rawSmooth[i])), ...gdata.map(d=>d.wpm));
     maxY=Math.ceil(maxY*1.1/20)*20;
-    const maxE=Math.max(1, ...data.map(d=>d.err));
     const X=s=> pad.l + (maxS===minS ? 0.5 : (s-minS)/(maxS-minS)) * (W-pad.l-pad.r);
     const Y=v=> pad.t + (1-v/maxY)*(H-pad.t-pad.b);
-    const YE=v=> pad.t + (1-v/maxE)*(H-pad.t-pad.b);
     const mono='12px ui-monospace,Menlo,Consolas,monospace';
 
     g.font=mono; g.fillStyle='#94a3b8'; g.strokeStyle='#e2e8f0'; g.lineWidth=1;
@@ -1086,17 +1084,11 @@ const SpeedGame = (function(){
         g.beginPath(); g.moveTo(pad.l,y); g.lineTo(W-pad.r,y); g.stroke();
         g.textAlign='right'; g.textBaseline='middle'; g.fillText(Math.round(v), pad.l-8, y);
     }
-    for(let i=0;i<=Math.min(maxE,4);i++){
-        const v=Math.round(maxE*i/Math.min(maxE,4));
-        g.textAlign='left'; g.fillText(v, W-pad.r+8, YE(v));
-    }
     const span=Math.max(1, Math.ceil((maxS-minS+1)/15));
     g.textAlign='center'; g.textBaseline='top';
     for(let s=minS;s<=Math.floor(maxS);s+=span) g.fillText(s, X(s), H-pad.b+8);
     g.save(); g.translate(14,(H-pad.b+pad.t)/2); g.rotate(-Math.PI/2);
     g.textBaseline='middle'; g.fillText('woorden per minuut',0,0); g.restore();
-    g.save(); g.translate(W-8,(H-pad.b+pad.t)/2); g.rotate(Math.PI/2);
-    g.textBaseline='middle'; g.fillText('fouten',0,0); g.restore();
 
     function line(pts,color,width,dash,dots){
         if(!pts.length) return;
@@ -1115,8 +1107,16 @@ const SpeedGame = (function(){
     line(data.map((d,i)=>({x:X(d.s),y:Y(Math.min(rawSmooth[i],maxY))})), '#94a3b8', 2);
     if(gdata.length) line(gdata.map(d=>({x:X(d.s),y:Y(d.wpm)})), '#8b5cf6', 2, [6,5]);
     line(data.map(d=>({x:X(d.s),y:Y(d.wpm)})), '#f59e0b', 3, null, true);
-    g.fillStyle='#ef4444'; g.font='bold 13px sans-serif'; g.textAlign='center'; g.textBaseline='middle';
-    data.forEach(d=>{ if(d.err>0) g.fillText('✕', X(d.s), YE(d.err)); });
+    // Fouten: kruisje precies op de wpm-lijn op het moment van de fout; bij meer fouten in die seconde staat het aantal erbij
+    g.textBaseline='middle';
+    data.forEach(d=>{
+      if(d.err<=0) return;
+      const x=X(d.s), y=Y(d.wpm);
+      g.fillStyle='#fff'; g.beginPath(); g.arc(x,y,7,0,Math.PI*2); g.fill();
+      g.fillStyle='#ef4444'; g.font='bold 13px sans-serif'; g.textAlign='center';
+      g.fillText('✕', x, y);
+      if(d.err>1){ g.font='bold 11px sans-serif'; g.textAlign='left'; g.fillText('×'+d.err, x+7, y-10); }
+    });
   }
 
   // ---------- Openen / sluiten ----------
