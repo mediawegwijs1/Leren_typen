@@ -534,6 +534,64 @@ const SpeedGame = (function(){
     bibliotheek museum dierentuin boerderij kasteel brug weg pad heuvel berg rivier meer eiland
     vriendschap avontuur geheim plan idee droom wens kans beurt team groep les toets pauze bel
     schaar lijm papier gum liniaal tas jas fles beker bord vork lepel mes pan oven
+    goed slecht beter best veel weinig meer minst heel erg zeer echt even graag liever misschien zeker
+    natuurlijk eigenlijk gewoon meteen snel later vroeg laat vooral bijna genoeg alles niets iets iemand
+    niemand iedereen elke ieder andere ander zelf zelfs toch nu net pas weer terug verder samen apart
+    hoofd haar gezicht wang kin nek schouder elleboog vinger duim knie teen hiel hart huid bloed bot
+    dokter zuster tandarts politie brandweer bakker slager boer visser piloot kapitein koning koningin
+    prins prinses ridder draak heks tovenaar reus dwerg elf fee piraat robot monster spook held
+    leraar leerling directeur bus chauffeur postbode kok schilder timmerman kapper
+    gezin familie neef nicht baas buurvrouw klasgenoot vriendjes ouders kleinkind
+    ontbijt lunch diner maaltijd honger dorst sap thee koffie limonade water yoghurt ei worst
+    groente fruit sla tomaat komkommer wortel ui aardappel bloemkool broccoli paprika mais erwt boon
+    sinaasappel citroen kers pruim meloen ananas mango kiwi framboos bosbes noot pinda chocolade
+    hagelslag jam honing suiker zout peper saus ketchup mayonaise spaghetti macaroni pannenkoeken
+    stoep gracht plein kerk toren molen haven station vliegveld ziekenhuis apotheek bakkerij
+    supermarkt gemeente provincie hoofdstad wereld aarde planeet ruimte heelal zonnestelsel komeet
+    woestijn oerwoud jungle grot vulkaan waterval oceaan golf duin dijk polder sloot vijver beek
+    weiland akker hek schuur stal hooi graan tarwe zaad plant wortels takken stam schors eikel
+    lente zomer herfst winter januari februari maart april mei juni juli augustus september oktober
+    november december maandag dinsdag woensdag donderdag vrijdag zaterdag zondag weekend vakantie
+    seconde kwartier eeuw moment begin einde midden kant hoek rand punt lijn vorm cirkel vierkant
+    driehoek kleur getal som plus min keer delen meten wegen gewicht lengte breedte hoogte
+    elf twaalf dertien veertien vijftien twintig dertig veertig vijftig zestig zeventig tachtig
+    negentig duizend miljoen half helft dubbel eerste tweede derde laatste volgende vorige
+    lopen wandelen sluipen kruipen glijden rollen draaien schommelen duwen trekken tillen gooien
+    vangen schoppen slaan raken missen winnen verliezen proberen oefenen beginnen stoppen eindigen
+    openen sluiten vullen legen wassen poetsen schoonmaken opruimen koken bakken braden snijden
+    knippen plakken vouwen breien naaien timmeren zagen boren schilderen plakken stempelen
+    kiezen beslissen onthouden vergeten begrijpen bedenken uitleggen luisteren antwoorden fluisteren
+    schreeuwen zuchten gapen niezen hoesten glimlachen knipogen zwaaien knikken klappen fluiten
+    groeien bloeien vallen staan zitten liggen hangen drijven zinken vliegen landen stijgen dalen
+    verstoppen ontdekken verzamelen ruilen delen lenen kopen verkopen betalen sparen tellen
+    reizen verhuizen logeren kamperen vissen jagen racen skaten surfen voetballen hockeyen
+    tennissen turnen klauteren sjouwen fietsen steppen zeilen roeien peddelen duiken
+    dier huisdier hamster cavia schildpad parkiet goudvis pony ezel geit lam kalf veulen big
+    haan hen kuiken zwaan gans reiger ooievaar meeuw mus merel duif kraai ekster specht pauw
+    papegaai struisvogel adelaar valk vleermuis eekhoorn hert ree wolf das otter bever
+    rat mol slak worm kever lieveheersbeestje mug vlieg wesp hommel libel sprinkhaan krekel
+    kwal krab kreeft garnaal haai walvis dolfijn zeehond octopus zeester schelp krokodil nijlpaard
+    neushoorn kameel kangoeroe koala panda gorilla cheeta luipaard hyena hagedis
+    fiets brommer motor scooter vrachtwagen taxi tram metro veerboot zeilboot kano helikopter
+    ballon wiel stuur rem bel lamp zadel ketting band motorkap kofferbak raampje
+    speelgoed knuffel blokken lego trein knikker tol vlieger springtouw hoepel schep emmer
+    zandbak glijbaan schommel wip klimrek trampoline doelpunt scheidsrechter wedstrijd beker medaille
+    gitaar piano trommel fluit viool trompet zanger band concert toneel voorstelling circus clown
+    goochelaar acrobaat jongleur theater bioscoop kermis draaimolen achtbaan suikerspin
+    vraag zin woord letter klinker medeklinker hoofdletter punt komma uitroepteken vraagteken
+    alfabet dictee rekenen taal lezen spelling aardrijkskunde geschiedenis natuur gym tekenen
+    schooltas etui kleurpotlood stift krijt bord agenda rooster rapport cijfer diploma
+    muis toets scherm printer internet website wachtwoord bericht mail spelletje filmpje
+    vrolijk verdrietig boos bang verlegen trots jaloers verbaasd nieuwsgierig geduldig eerlijk
+    behulpzaam aardig gemeen grappig saai spannend eng gezellig rustig netjes vies schoon
+    nat droog heet lauw fris zoet zuur zout bitter lekker vies zacht ruw glad scherp bot
+    licht donker helder vaag luid zacht stil leeg vol open dicht rond plat breed smal diep ondiep
+    zwaar licht vroeg laat jong oud rijk arm gezond ziek wakker slaperig hongerig dorstig
+    kussen deken laken pyjama tandenborstel tandpasta zeep handdoek douche bad wc kraan
+    vloer plafond gang hal balkon garage schuurtje tuinhek brievenbus sleutel slot bel
+    gordijn kleed bank fauteuil bureau boekenkast la kist doos mand tas koffer rugzak
+    sterren regenboog bliksem donder hagel mist ijs vorst dauw zonneschijn schaduw
+    schat kaart kompas verrekijker tent kampvuur zaklamp touw knoop haak net
   `.trim().split(/\s+/)));
 
   const AMOUNTS = { time:[15,30,60,120], words:[10,25,50,100] };
@@ -864,6 +922,7 @@ const SpeedGame = (function(){
     if(input.value!==typed[cur]) input.value=typed[cur];
     recordEvent();
     positionAll();
+    ensureVisible();
     updateLive();
   });
   input.addEventListener('keydown',e=>{
@@ -873,7 +932,7 @@ const SpeedGame = (function(){
         commitWord('\n');
         if(finished) return;
         input.value='';
-        recordEvent(); positionAll(); updateLive();
+        recordEvent(); positionAll(); updateLive(); ensureVisible();
         return;
     }
     if(e.key==='Backspace' && input.value==='' && cur>0 && !finished && !wordOk(cur-1)){
@@ -882,7 +941,7 @@ const SpeedGame = (function(){
         typed[cur]=''; renderWord(cur);
         cur--; renderWord(cur);
         input.value=typed[cur];
-        recordEvent(); positionAll(); updateLive();
+        recordEvent(); positionAll(); updateLive(); ensureVisible();
     }
   });
   input.addEventListener('paste',e=>{ e.preventDefault(); });
@@ -894,6 +953,25 @@ const SpeedGame = (function(){
     if(!isOpen || finished) return;
     input.focus({preventScroll:true});
     wrap.classList.remove('blurred');
+  }
+  // Houd de regel waarop je typt in beeld (ook met tablet-toetsenbord open of na zelf scrollen)
+  function ensureVisible(){
+    if(!isOpen || testEl.hidden) return;
+    const vv=window.visualViewport;
+    const visTop = vv ? vv.offsetTop : 0;
+    const visH = vv ? vv.height : window.innerHeight;
+    const r=wrap.getBoundingClientRect();
+    const c=caret.getBoundingClientRect();
+    const margin=Math.min(60, visH*0.1);
+    if(r.top >= visTop+margin && c.bottom <= visTop+visH-margin) return;
+    // Tekstvak (met de teller erboven) in het bovenste deel van het zichtbare scherm zetten
+    const want = visTop + Math.max(margin, Math.min(visH*0.25, (visH-r.height)/2));
+    window.scrollBy({ top: r.top - want, behavior:'auto' });
+  }
+  if(window.visualViewport){
+    window.visualViewport.addEventListener('resize',()=>{
+      if(isOpen && document.activeElement===input) setTimeout(ensureVisible,50);
+    });
   }
 
   document.addEventListener('keydown',e=>{
