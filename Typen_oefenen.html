@@ -285,6 +285,10 @@
   .spL.ok{color:var(--ink)}
   .spL.bad{color:#ef4444}
   .spL.extra{color:#b91c1c; opacity:.6}
+  .spL.enter{color:#cbd5e1; padding-left:.15em}
+  .spL.enter.ok{color:#64748b}
+  .spL.enter.bad{color:#ef4444}
+  .spBreak{flex-basis:100%; height:0}
   #spCaret,#spGhost{
     position:absolute; left:0; top:0; width:3px; height:1.15em; margin-top:.22em;
     border-radius:2px; pointer-events:none;
@@ -440,8 +444,8 @@
 
       <div class="spConfig">
         <div class="spGroup">
-          <button class="spOpt" data-toggle="caps" title="Hoofdletters toevoegen">Aa hoofdletters</button>
-          <button class="spOpt" data-toggle="punct" title="Leestekens toevoegen">!? leestekens</button>
+          <button class="spOpt" data-level="standaard" title="Alleen kleine letters en spaties">standaard</button>
+          <button class="spOpt" data-level="moeilijk" title="Zinnen met hoofdletters, leestekens en Enter">moeilijk</button>
         </div>
         <div class="spGroup">
           <button class="spOpt" data-mode="time">⏱ tijd</button>
@@ -465,7 +469,7 @@
         <div class="spCenter">
           <button class="spIconBtn" id="spNewBtn" title="Nieuwe tekst">↻</button>
         </div>
-        <div class="spTip">Begin gewoon met typen · <kbd>spatie</kbd> = volgend woord · <kbd>Tab</kbd> = nieuwe tekst</div>
+        <div class="spTip" id="spTypeTip"></div>
       </div>
 
       <div id="spResult" hidden>
@@ -495,7 +499,7 @@
           <button class="btn btnResetPrimary" id="spRetry">↻ Opnieuw (tegen je ghost 👻)</button>
           <button class="btn btnNextLevel" id="spNext">Volgende tekst ▶</button>
         </div>
-        <div class="spTip">Tip: <kbd>Tab</kbd> = volgende tekst</div>
+
       </div>
     </div>
   </div>
@@ -542,51 +546,64 @@ const SpeedGame = (function(){
   const caret=document.createElement('div'); caret.id='spCaret';
   const ghostCaret=document.createElement('div'); ghostCaret.id='spGhost';
 
-  let settings = { caps:false, punct:false, mode:'time', amount:30 };
+  let settings = { level:'standaard', mode:'time', amount:30 };
   try { Object.assign(settings, JSON.parse(localStorage.getItem('speedTypeSettings')||'{}')); } catch(e){}
+  if(settings.level!=='moeilijk') settings.level='standaard';
   if(!AMOUNTS[settings.mode]) settings.mode='time';
   if(!AMOUNTS[settings.mode].includes(settings.amount)) settings.amount=AMOUNTS[settings.mode][1];
 
   let isOpen=false;
-  let words=[], typed=[], cur=0, wordEls=[];
+  // seps[i] = wat er na woord i getypt moet worden: ' ' (spatie), '\n' (Enter) of '' (einde tekst)
+  let words=[], seps=[], typed=[], typedSeps=[], cur=0, wordEls=[];
+  let shownWpm=null;
   let running=false, finished=false, startT=0, tick=null, raf=null;
   let correctKeys=0, wrongKeys=0, secKeys=0, secErr=0, lastSec=0;
   let history=[], events=[];
   let ghost=null, ghostIdx=0, lastRun=null;
-  let gen={ needCap:true, last:'' };
+  let gen={ left:0, last:'' };
   let lineH=0;
 
   // ---------- Tekst maken ----------
   function cap(w){ return w.charAt(0).toUpperCase()+w.slice(1); }
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  // Moeilijk: zinnen met hoofdletter aan het begin, leestekens en Enter aan het eind van elke zin
   function genWords(n, isEnd){
-    const out=[];
+    const out={ words:[], seps:[] };
+    const hard = settings.level==='moeilijk';
     for(let i=0;i<n;i++){
-        let w;
-        do { w=WORD_LIST[Math.floor(Math.random()*WORD_LIST.length)]; } while(w===gen.last);
-        gen.last=w;
-        if(settings.caps && (gen.needCap || Math.random()<0.15)) w=cap(w);
-        gen.needCap=false;
-        if(settings.punct){
+      let w;
+      do { w=pick(WORD_LIST); } while(w===gen.last);
+      gen.last=w;
+      let sep=' ';
+      if(hard){
+        const first = gen.left===0;
+        if(first){ gen.left=4+Math.floor(Math.random()*6); w=cap(w); }
+        gen.left--;
+        const endOfText = isEnd && i===n-1;
+        if(gen.left===0 || endOfText){
+          w += pick(['.','.','.','?','!']);
+          sep='\n';
+          gen.left=0;
+        }else if(!first && gen.left>=2){
           const r=Math.random();
-          if(r<0.09){ w+='.'; gen.needCap=true; }
-          else if(r<0.12){ w+='?'; gen.needCap=true; }
-          else if(r<0.14){ w+='!'; gen.needCap=true; }
-          else if(r<0.25){ w+=','; }
-          else if(r<0.26){ w+=':'; }
+          if(r<0.14) w+=',';
+          else if(r<0.17) w+=':';
+          else if(r<0.20) w='('+w+')';
+          else if(r<0.22) w+='/'+pick(WORD_LIST);
         }
-        out.push(w);
+      }
+      out.words.push(w); out.seps.push(sep);
     }
-    if(isEnd && settings.punct && out.length && !/[.?!]$/.test(out[out.length-1])){
-        out[out.length-1]=out[out.length-1].replace(/[,:]$/,'')+'.';
-    }
+    if(isEnd && out.seps.length) out.seps[out.seps.length-1]='';
     return out;
   }
 
   // ---------- Weergave ----------
+  function wordOk(i){ return typed[i]===words[i] && typedSeps[i]===seps[i]; }
   function renderWord(i){
     const el=wordEls[i]; if(!el) return;
     const w=words[i], t=typed[i]||'';
-    el.className='spWord'+(i<cur && t!==w ? ' err':'');
+    el.className='spWord'+(i<cur && !wordOk(i) ? ' err':'');
     el.textContent='';
     const len=Math.max(w.length,t.length);
     for(let j=0;j<len;j++){
@@ -601,12 +618,24 @@ const SpeedGame = (function(){
         }
         el.appendChild(s);
     }
+    if(seps[i]==='\n'){
+      const s=document.createElement('span');
+      s.className='spL enter';
+      s.textContent='↵';
+      if(i<cur) s.classList.add(typedSeps[i]==='\n'?'ok':'bad');
+      el.appendChild(s);
+    }
   }
   function addWordEls(from){
     const frag=document.createDocumentFragment();
     for(let i=from;i<words.length;i++){
         const el=document.createElement('div');
         wordEls[i]=el; frag.appendChild(el);
+        if(seps[i]==='\n'){
+          const br=document.createElement('div');
+          br.className='spBreak';
+          frag.appendChild(br);
+        }
     }
     wordsEl.insertBefore(frag, caret);
     for(let i=from;i<words.length;i++) renderWord(i);
@@ -654,7 +683,7 @@ const SpeedGame = (function(){
   // ---------- Statistiek ----------
   function correctChars(){
     let n=0;
-    for(let i=0;i<cur;i++) if(typed[i]===words[i]) n+=words[i].length+1;
+    for(let i=0;i<cur;i++) if(wordOk(i)) n+=words[i].length+1;
     const t=typed[cur]||'', w=words[cur]||'';
     if(t && w.startsWith(t)) n+=t.length;
     return n;
@@ -675,20 +704,29 @@ const SpeedGame = (function(){
         liveCount.textContent=`${Math.min(cur,words.length)}/${words.length}`;
     }
     liveCount.className = running ? '' : 'muted';
-    const s=elapsedSec();
-    liveWpm.textContent = running && s>=1 ? Math.round(wpmAt(s,correctChars()))+' wpm' : '';
+    if(!running) liveWpm.textContent='';
+  }
+  // Live wpm rustig houden: alleen 1x per seconde bijwerken, vanaf 2 s, en zacht uitmiddelen
+  function updateLiveWpm(sec){
+    if(sec<2) return;
+    const now=wpmAt(sec,correctChars());
+    shownWpm = shownWpm===null ? now : shownWpm*0.7 + now*0.3;
+    liveWpm.textContent=Math.round(shownWpm)+' wpm';
   }
 
   // ---------- Start / stop ----------
-  function resetRun(newWords){
+  function resetRun(text){
     clearInterval(tick); cancelAnimationFrame(raf);
     running=false; finished=false;
-    words=newWords; typed=['']; cur=0;
-    correctKeys=0; wrongKeys=0; secKeys=0; secErr=0; lastSec=0;
+    words=text.words; seps=text.seps; typed=['']; typedSeps=[]; cur=0;
+    correctKeys=0; wrongKeys=0; secKeys=0; secErr=0; lastSec=0; shownWpm=null;
     history=[]; events=[]; ghostIdx=0;
     input.value='';
     caret.classList.add('idle');
     ghostTag.style.display = ghost ? 'inline' : 'none';
+    $('spTypeTip').innerHTML = settings.level==='moeilijk'
+      ? 'Begin gewoon met typen · <kbd>spatie</kbd> = volgend woord · <kbd>Enter</kbd> bij ↵ = nieuwe zin'
+      : 'Begin gewoon met typen · <kbd>spatie</kbd> = volgend woord';
     resultEl.hidden=true; testEl.hidden=false;
     renderAll();
     updateLive();
@@ -696,14 +734,14 @@ const SpeedGame = (function(){
   }
   function newText(){
     ghost=null;
-    gen={needCap:true,last:''};
+    gen={left:0,last:''};
     const n = settings.mode==='words' ? settings.amount : 80;
     resetRun(genWords(n, settings.mode==='words'));
   }
   function retry(){
     if(!lastRun) return newText();
     ghost=lastRun;
-    resetRun(lastRun.words.slice());
+    resetRun({ words:lastRun.words.slice(), seps:lastRun.seps.slice() });
   }
   function start(){
     running=true;
@@ -720,7 +758,7 @@ const SpeedGame = (function(){
     if(!running) return;
     const el=elapsedSec();
     const limit = settings.mode==='time' ? settings.amount : Infinity;
-    while(lastSec < Math.min(Math.floor(el), limit)){ lastSec++; pushSecond(lastSec); }
+    while(lastSec < Math.min(Math.floor(el), limit)){ lastSec++; pushSecond(lastSec); updateLiveWpm(lastSec); }
     updateLive();
     if(settings.mode==='time' && el>=settings.amount) finish();
   }
@@ -762,7 +800,7 @@ const SpeedGame = (function(){
     }
     const totalKeys=correctKeys+wrongKeys;
     const run={
-        words:words.slice(), events, history,
+        words:words.slice(), seps:seps.slice(), events, history,
         wpm:Math.round(wpmAt(el,correctChars())),
         raw:Math.round(wpmAt(el,typedChars())),
         acc: totalKeys ? Math.round(correctKeys/totalKeys*100) : 0,
@@ -792,9 +830,10 @@ const SpeedGame = (function(){
     renderWord(cur);
     if(settings.mode==='words' && cur===words.length-1 && seg===w){ recordEvent(); finish(); }
   }
-  function commitWord(){
+  function commitWord(sep){
     secKeys++;
-    if(typed[cur]===words[cur]) correctKeys++; else { wrongKeys++; secErr++; }
+    typedSeps[cur]=sep;
+    if(wordOk(cur) || (seps[cur]==='' && typed[cur]===words[cur])) correctKeys++; else { wrongKeys++; secErr++; }
     cur++;
     typed[cur]='';
     renderWord(cur-1);
@@ -803,7 +842,8 @@ const SpeedGame = (function(){
     }
     if(settings.mode==='time' && words.length-cur<40){
         const from=words.length;
-        words.push(...genWords(60,false));
+        const more=genWords(60,false);
+        words.push(...more.words); seps.push(...more.seps);
         addWordEls(from);
     }
   }
@@ -817,7 +857,7 @@ const SpeedGame = (function(){
         setCurrent(parts[p]);
         if(finished) return;
         if(p<parts.length-1 && typed[cur].length>0){
-          commitWord();
+          commitWord(' ');
           if(finished) return;
         }
     }
@@ -827,8 +867,16 @@ const SpeedGame = (function(){
     updateLive();
   });
   input.addEventListener('keydown',e=>{
-    if(e.key==='Enter'){ e.preventDefault(); return; }
-    if(e.key==='Backspace' && input.value==='' && cur>0 && !finished && typed[cur-1]!==words[cur-1]){
+    if(e.key==='Enter'){
+        e.preventDefault();
+        if(!running || finished || !(typed[cur]||'').length) return;
+        commitWord('\n');
+        if(finished) return;
+        input.value='';
+        recordEvent(); positionAll(); updateLive();
+        return;
+    }
+    if(e.key==='Backspace' && input.value==='' && cur>0 && !finished && !wordOk(cur-1)){
         // terug naar het vorige woord als daar een fout in zit
         e.preventDefault();
         typed[cur]=''; renderWord(cur);
@@ -850,7 +898,11 @@ const SpeedGame = (function(){
 
   document.addEventListener('keydown',e=>{
     if(!isOpen) return;
-    if(e.key==='Tab'){ e.preventDefault(); newText(); return; }
+    // Na de ronde start niets vanzelf opnieuw: alleen klikken op Opnieuw / Volgende tekst
+    if(finished){
+        if((e.key===' ' || e.key==='Enter') && panel.contains(document.activeElement)) e.preventDefault();
+        return;
+    }
     if(!finished && document.activeElement!==input && e.key.length===1 && !e.ctrlKey && !e.metaKey && !e.altKey){
         focusInput();
     }
@@ -860,7 +912,7 @@ const SpeedGame = (function(){
   // ---------- Instellingen ----------
   const amountsEl=$('spAmounts');
   function renderConfig(){
-    panel.querySelectorAll('[data-toggle]').forEach(b=> b.classList.toggle('on', !!settings[b.dataset.toggle]));
+    panel.querySelectorAll('[data-level]').forEach(b=> b.classList.toggle('on', b.dataset.level===settings.level));
     panel.querySelectorAll('[data-mode]').forEach(b=> b.classList.toggle('on', b.dataset.mode===settings.mode));
     amountsEl.textContent='';
     AMOUNTS[settings.mode].forEach(a=>{
@@ -877,8 +929,9 @@ const SpeedGame = (function(){
     renderConfig();
     newText();
   }
-  panel.querySelectorAll('[data-toggle]').forEach(b=> b.addEventListener('click',()=>{
-    settings[b.dataset.toggle]=!settings[b.dataset.toggle]; changed();
+  panel.querySelectorAll('[data-level]').forEach(b=> b.addEventListener('click',()=>{
+    if(settings.level===b.dataset.level) return focusInput();
+    settings.level=b.dataset.level; changed();
   }));
   panel.querySelectorAll('[data-mode]').forEach(b=> b.addEventListener('click',()=>{
     if(settings.mode===b.dataset.mode) return focusInput();
@@ -904,10 +957,9 @@ const SpeedGame = (function(){
     $('spResRaw').textContent=run.raw;
     $('spResChars').textContent=run.chars.join('/');
     $('spResTime').textContent=fmtTime(run.time);
-    const extras=[settings.caps?'hoofdletters':'', settings.punct?'leestekens':''].filter(Boolean).join(' + ');
     $('spResType').innerHTML =
         (settings.mode==='time' ? `tijd ${settings.amount}` : `woorden ${settings.amount}`) +
-        `<br>Nederlands${extras ? '<br>'+extras : ''}`;
+        `<br>Nederlands<br>${settings.level}`;
     const cmp=$('spGhostCompare');
     if(prev){
         const d=run.wpm-prev.wpm;
@@ -921,7 +973,6 @@ const SpeedGame = (function(){
     $('spLegendGhost').style.display = prev ? '' : 'none';
     chartGhost=prev;
     drawChart(run, prev);
-    $('spRetry').focus({preventScroll:true});
   }
 
   function drawChart(run, prev){
@@ -938,7 +989,12 @@ const SpeedGame = (function(){
     const pad={l:52,r:40,t:12,b:30};
     const maxS=Math.max(data[data.length-1].s, gdata.length ? gdata[gdata.length-1].s : 0, 1);
     const minS=1;
-    let maxY=Math.max(10, ...data.map(d=>Math.max(d.wpm,d.raw)), ...gdata.map(d=>d.wpm));
+    // rauwe snelheid per seconde uitmiddelen over 3 seconden zodat de lijn rustiger is
+    const rawSmooth=data.map((d,i)=>{
+      const win=data.slice(Math.max(0,i-1), i+2);
+      return win.reduce((a,b)=>a+b.raw,0)/win.length;
+    });
+    let maxY=Math.max(10, ...data.map((d,i)=>Math.max(d.wpm,rawSmooth[i])), ...gdata.map(d=>d.wpm));
     maxY=Math.ceil(maxY*1.1/20)*20;
     const maxE=Math.max(1, ...data.map(d=>d.err));
     const X=s=> pad.l + (maxS===minS ? 0.5 : (s-minS)/(maxS-minS)) * (W-pad.l-pad.r);
@@ -978,7 +1034,7 @@ const SpeedGame = (function(){
         if(dots){ g.fillStyle=color; pts.forEach(p=>{ g.beginPath(); g.arc(p.x,p.y,2.5,0,Math.PI*2); g.fill(); }); }
         g.restore();
     }
-    line(data.map(d=>({x:X(d.s),y:Y(Math.min(d.raw,maxY))})), '#94a3b8', 2);
+    line(data.map((d,i)=>({x:X(d.s),y:Y(Math.min(rawSmooth[i],maxY))})), '#94a3b8', 2);
     if(gdata.length) line(gdata.map(d=>({x:X(d.s),y:Y(d.wpm)})), '#8b5cf6', 2, [6,5]);
     line(data.map(d=>({x:X(d.s),y:Y(d.wpm)})), '#f59e0b', 3, null, true);
     g.fillStyle='#ef4444'; g.font='bold 13px sans-serif'; g.textAlign='center'; g.textBaseline='middle';
