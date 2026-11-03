@@ -242,6 +242,95 @@
     max-height:260px;
     overflow-y:auto;
   }
+
+  /* -------- Snelheid typen -------- */
+  .speed{background:linear-gradient(180deg,#f472b6,#db2777)}
+  body.speed-mode .container{max-width:1200px}
+  body.speed-mode .container > .panel:not(#speedPanel){display:none!important}
+  #speedPanel{
+    --sp-accent:#d97706; --sp-caret:#f59e0b; --sp-ghost:#8b5cf6;
+    --sp-mono:ui-monospace,"Roboto Mono","SFMono-Regular",Menlo,Consolas,"Liberation Mono",monospace;
+    padding:16px 22px 28px;
+  }
+  .spTop{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap}
+  .spTitle{font-weight:900; font-size:20px}
+  .spConfig{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:14px 0 4px}
+  .spGroup{display:flex; gap:2px; background:#f1f5f9; border:1px solid var(--line); border-radius:12px; padding:5px 8px; flex-wrap:wrap}
+  .spOpt{
+    border:0; background:none; color:#64748b; cursor:pointer;
+    font:600 14px var(--sp-mono); padding:6px 10px; border-radius:8px;
+  }
+  .spOpt:hover{color:var(--ink); background:#e2e8f0}
+  .spOpt.on{color:var(--sp-accent)}
+  #spTest{max-width:1050px; margin:0 auto; padding-top:26px}
+  .spLive{
+    display:flex; align-items:center; gap:22px; min-height:42px;
+    font:700 28px var(--sp-mono); color:var(--sp-accent);
+  }
+  .spLive .muted{color:#cbd5e1}
+  #spGhostTag{font:600 14px var(--sp-mono); color:var(--sp-ghost); display:none}
+  .spLang{text-align:center; color:#64748b; font:500 14px var(--sp-mono); margin:4px 0 12px}
+  #spWordsWrap{
+    position:relative; overflow:hidden; cursor:text;
+    font-family:var(--sp-mono); font-size:clamp(20px,2.6vw,30px);
+    height:calc(3 * 1.6em);
+  }
+  #spWords{
+    position:relative; display:flex; flex-wrap:wrap; align-content:flex-start;
+    line-height:1.6em; transition:transform .15s ease;
+  }
+  .spWord{height:1.6em; margin-right:.6em; white-space:pre}
+  .spWord.err{text-decoration:underline 2px #ef4444; text-underline-offset:6px}
+  .spL{color:#94a3b8}
+  .spL.ok{color:var(--ink)}
+  .spL.bad{color:#ef4444}
+  .spL.extra{color:#b91c1c; opacity:.6}
+  #spCaret,#spGhost{
+    position:absolute; left:0; top:0; width:3px; height:1.15em; margin-top:.22em;
+    border-radius:2px; pointer-events:none;
+    transition:left .08s linear, top .08s linear;
+  }
+  #spCaret{background:var(--sp-caret)}
+  #spCaret.idle{animation:spBlink 1s step-end infinite}
+  #spGhost{background:var(--sp-ghost); opacity:.45; display:none}
+  @keyframes spBlink{50%{opacity:0}}
+  #spFocusMsg{
+    position:absolute; inset:0; display:none; align-items:center; justify-content:center;
+    font:600 18px var(--sp-mono); color:var(--ink); z-index:2;
+  }
+  #spWordsWrap.blurred #spWords{filter:blur(5px); opacity:.5}
+  #spWordsWrap.blurred #spFocusMsg{display:flex}
+  #spInput{
+    position:absolute; left:0; top:0; width:1px; height:1px; opacity:0;
+    border:0; padding:0; font-size:16px; pointer-events:none;
+  }
+  .spCenter{display:flex; justify-content:center; margin-top:22px}
+  .spIconBtn{
+    border:0; background:none; cursor:pointer; color:#64748b; font-size:26px;
+    padding:6px 14px; border-radius:10px;
+  }
+  .spIconBtn:hover{color:var(--ink); background:#f1f5f9}
+  .spTip{text-align:center; color:#94a3b8; font:13px var(--sp-mono); margin-top:6px}
+  .spTip kbd{background:#f1f5f9; border:1px solid var(--line); border-radius:4px; padding:1px 5px; color:#475569}
+
+  #spResult{max-width:1100px; margin:18px auto 0}
+  .spResTop{display:grid; grid-template-columns:200px 1fr; gap:22px; align-items:center}
+  .spBig .lbl,.spStat .lbl{color:#64748b; font:600 15px var(--sp-mono)}
+  .spBig .lbl{font-size:24px}
+  .spBig .val{color:var(--sp-accent); font:800 68px var(--sp-mono); line-height:1.05; margin-bottom:8px}
+  .spChartWrap{height:240px; position:relative}
+  #spChart{width:100%; height:100%; display:block}
+  .spLegend{display:flex; gap:16px; justify-content:center; flex-wrap:wrap; font:13px var(--sp-mono); color:#64748b; margin-top:4px}
+  .spLegend i{display:inline-block; width:18px; height:3px; border-radius:2px; vertical-align:middle; margin-right:5px}
+  .spResStats{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin-top:18px}
+  .spStat .val{color:var(--sp-accent); font:700 28px var(--sp-mono)}
+  .spStat .sub{color:#94a3b8; font:12px var(--sp-mono)}
+  #spGhostCompare{text-align:center; font:600 16px var(--sp-mono); margin-top:16px; color:var(--sp-ghost)}
+  .spResBtns{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:20px}
+  @media (max-width:700px){
+    .spResTop{grid-template-columns:1fr}
+    .spBig{display:flex; gap:24px; flex-wrap:wrap}
+  }
 </style>
 </head>
 <body>
@@ -271,6 +360,7 @@
         <button class="levelBtn normal disabled" id="btnNormal" disabled>Normaal</button>
         <button class="levelBtn hard   disabled" id="btnHard" disabled>Moeilijk</button>
         <button class="levelBtn style  disabled" id="btnStyle" disabled>Kleur typen</button>
+        <button class="levelBtn speed  disabled" id="btnSpeed" disabled>⚡ Snelheid</button>
       </div>
       <div class="hint" id="hint">
         Je start bij <strong>Makkelijk</strong>: alleen woorden en spaties. Rond af om het volgende niveau te openen.
@@ -338,9 +428,587 @@
 
       <div style="margin-top:10px; text-align:right;">
         <button class="btn btnNextLevel" id="btnStyleResult">Eindresultaat 🎉</button>
+        <button class="btn btnNextLevel speed" id="btnToSpeed">Door naar Snelheid ⚡</button>
+      </div>
+    </div>
+
+    <div class="panel" id="speedPanel" style="display:none">
+      <div class="spTop">
+        <button class="btn" id="spBack">← Terug naar levels</button>
+        <div class="spTitle">⚡ Snelheid typen</div>
+      </div>
+
+      <div class="spConfig">
+        <div class="spGroup">
+          <button class="spOpt" data-toggle="caps" title="Hoofdletters toevoegen">Aa hoofdletters</button>
+          <button class="spOpt" data-toggle="punct" title="Leestekens toevoegen">!? leestekens</button>
+        </div>
+        <div class="spGroup">
+          <button class="spOpt" data-mode="time">⏱ tijd</button>
+          <button class="spOpt" data-mode="words">A woorden</button>
+        </div>
+        <div class="spGroup" id="spAmounts"></div>
+      </div>
+
+      <div id="spTest">
+        <div class="spLive">
+          <span id="spLiveCount"></span>
+          <span id="spLiveWpm"></span>
+          <span id="spGhostTag">👻 = je vorige ronde</span>
+        </div>
+        <div class="spLang">🌐 Nederlands</div>
+        <div id="spWordsWrap">
+          <div id="spWords"></div>
+          <div id="spFocusMsg">👆 Klik hier om verder te typen</div>
+          <input id="spInput" type="text" spellcheck="false" autocorrect="off" autocomplete="off" autocapitalize="off" data-lpignore="true" aria-label="Typ hier">
+        </div>
+        <div class="spCenter">
+          <button class="spIconBtn" id="spNewBtn" title="Nieuwe tekst">↻</button>
+        </div>
+        <div class="spTip">Begin gewoon met typen · <kbd>spatie</kbd> = volgend woord · <kbd>Tab</kbd> = nieuwe tekst</div>
+      </div>
+
+      <div id="spResult" hidden>
+        <div class="spResTop">
+          <div class="spBig">
+            <div><div class="lbl">wpm</div><div class="val" id="spResWpm">0</div></div>
+            <div><div class="lbl">nauwkeurig</div><div class="val" id="spResAcc">0%</div></div>
+          </div>
+          <div>
+            <div class="spChartWrap"><canvas id="spChart"></canvas></div>
+            <div class="spLegend">
+              <span><i style="background:#f59e0b"></i>wpm</span>
+              <span><i style="background:#94a3b8"></i>rauw</span>
+              <span id="spLegendGhost"><i style="background:#8b5cf6"></i>👻 vorige ronde</span>
+              <span><b style="color:#ef4444">✕</b> fouten</span>
+            </div>
+          </div>
+        </div>
+        <div class="spResStats">
+          <div class="spStat"><div class="lbl">soort test</div><div class="val" id="spResType" style="font-size:18px"></div></div>
+          <div class="spStat"><div class="lbl">rauw</div><div class="val" id="spResRaw"></div><div class="sub">alle tekens, ook fout</div></div>
+          <div class="spStat"><div class="lbl">tekens</div><div class="val" id="spResChars"></div><div class="sub">goed / fout / extra / gemist</div></div>
+          <div class="spStat"><div class="lbl">tijd</div><div class="val" id="spResTime"></div></div>
+        </div>
+        <div id="spGhostCompare"></div>
+        <div class="spResBtns">
+          <button class="btn btnResetPrimary" id="spRetry">↻ Opnieuw (tegen je ghost 👻)</button>
+          <button class="btn btnNextLevel" id="spNext">Volgende tekst ▶</button>
+        </div>
+        <div class="spTip">Tip: <kbd>Tab</kbd> = volgende tekst</div>
       </div>
     </div>
   </div>
+
+<script>
+// ======== Snelheid typen (los spel, eigen scherm) ========
+const SpeedGame = (function(){
+  const WORD_LIST = Array.from(new Set(`
+    de het een en van ik je jij hij zij wij we jullie ze mijn jouw zijn haar ons onze hun die dat deze dit
+    wat wie waar waarom hoe wanneer welke niet wel ook nog al maar of want dus als dan toen omdat terwijl
+    voor na met zonder bij naar uit op in aan over onder boven tussen achter naast door tegen om tot
+    is was ben bent waren heb hebt heeft hebben had hadden kan kunnen kon zal zou zullen moet moeten mag
+    mogen wil willen wordt worden werd gaan gaat ging komen komt kwam doen doet deed zien ziet zag kijken
+    lezen schrijven typen spelen lopen rennen springen zwemmen fietsen eten drinken slapen lachen huilen
+    praten zingen dansen denken weten maken bouwen tekenen kleuren leren helpen geven nemen pakken zoeken
+    vinden horen voelen ruiken wonen werken wachten roepen vragen zeggen vertellen tellen rekenen klimmen
+    huis school klas juf meester boek pen potlood schrift tafel stoel deur raam muur dak tuin straat stad
+    dorp land water zee strand bos boom blad bloem gras zon maan ster lucht wolk regen sneeuw wind storm
+    weer dag nacht ochtend middag avond week maand jaar tijd uur minuut hond kat paard koe varken schaap
+    kip eend vis vogel muis konijn beer leeuw tijger olifant aap giraf zebra slang uil vos egel kikker
+    vlinder bij mier spin vader moeder broer zus opa oma oom tante kind kinderen baby vriend vriendin
+    buurman mensen jongen meisje man vrouw appel peer banaan druif aardbei kaas brood boter melk soep
+    pizza pannenkoek ijsje taart koekje snoep friet rijst fiets auto bus trein boot vliegtuig raket
+    tractor rood blauw geel groen oranje paars roze bruin zwart wit grijs groot klein lang kort dik dun
+    snel langzaam hoog laag warm koud nieuw oud mooi lief blij boos bang moe stil druk vrolijk slim sterk
+    zacht hard leuk fijn twee drie vier vijf zes zeven acht negen tien honderd spel bal pop puzzel
+    computer telefoon tablet scherm toetsenbord letter woord zin verhaal tekst vraag antwoord hoofd hand
+    voet arm been oog oor neus mond tand buik rug jas broek trui sok schoen muts sjaal feest verjaardag
+    cadeau kaars ballon muziek liedje film foto vandaag morgen gisteren altijd nooit soms vaak samen
+    alleen hier daar overal ver dichtbij eerst daarna straks binnen buiten boven beneden links rechts
+    kamer keuken bed lamp klok spiegel kast trap zolder kelder winkel markt park speeltuin zwembad
+    bibliotheek museum dierentuin boerderij kasteel brug weg pad heuvel berg rivier meer eiland
+    vriendschap avontuur geheim plan idee droom wens kans beurt team groep les toets pauze bel
+    schaar lijm papier gum liniaal tas jas fles beker bord vork lepel mes pan oven
+  `.trim().split(/\s+/)));
+
+  const AMOUNTS = { time:[15,30,60,120], words:[10,25,50,100] };
+  const MAX_EXTRA = 8;
+  const $ = id => document.getElementById(id);
+
+  const panel=$('speedPanel'), wrap=$('spWordsWrap'), wordsEl=$('spWords'), input=$('spInput');
+  const testEl=$('spTest'), resultEl=$('spResult');
+  const liveCount=$('spLiveCount'), liveWpm=$('spLiveWpm'), ghostTag=$('spGhostTag');
+  const caret=document.createElement('div'); caret.id='spCaret';
+  const ghostCaret=document.createElement('div'); ghostCaret.id='spGhost';
+
+  let settings = { caps:false, punct:false, mode:'time', amount:30 };
+  try { Object.assign(settings, JSON.parse(localStorage.getItem('speedTypeSettings')||'{}')); } catch(e){}
+  if(!AMOUNTS[settings.mode]) settings.mode='time';
+  if(!AMOUNTS[settings.mode].includes(settings.amount)) settings.amount=AMOUNTS[settings.mode][1];
+
+  let isOpen=false;
+  let words=[], typed=[], cur=0, wordEls=[];
+  let running=false, finished=false, startT=0, tick=null, raf=null;
+  let correctKeys=0, wrongKeys=0, secKeys=0, secErr=0, lastSec=0;
+  let history=[], events=[];
+  let ghost=null, ghostIdx=0, lastRun=null;
+  let gen={ needCap:true, last:'' };
+  let lineH=0;
+
+  // ---------- Tekst maken ----------
+  function cap(w){ return w.charAt(0).toUpperCase()+w.slice(1); }
+  function genWords(n, isEnd){
+    const out=[];
+    for(let i=0;i<n;i++){
+        let w;
+        do { w=WORD_LIST[Math.floor(Math.random()*WORD_LIST.length)]; } while(w===gen.last);
+        gen.last=w;
+        if(settings.caps && (gen.needCap || Math.random()<0.15)) w=cap(w);
+        gen.needCap=false;
+        if(settings.punct){
+          const r=Math.random();
+          if(r<0.09){ w+='.'; gen.needCap=true; }
+          else if(r<0.12){ w+='?'; gen.needCap=true; }
+          else if(r<0.14){ w+='!'; gen.needCap=true; }
+          else if(r<0.25){ w+=','; }
+          else if(r<0.26){ w+=':'; }
+        }
+        out.push(w);
+    }
+    if(isEnd && settings.punct && out.length && !/[.?!]$/.test(out[out.length-1])){
+        out[out.length-1]=out[out.length-1].replace(/[,:]$/,'')+'.';
+    }
+    return out;
+  }
+
+  // ---------- Weergave ----------
+  function renderWord(i){
+    const el=wordEls[i]; if(!el) return;
+    const w=words[i], t=typed[i]||'';
+    el.className='spWord'+(i<cur && t!==w ? ' err':'');
+    el.textContent='';
+    const len=Math.max(w.length,t.length);
+    for(let j=0;j<len;j++){
+        const s=document.createElement('span');
+        s.className='spL';
+        if(j<w.length){
+          s.textContent=w[j];
+          if(j<t.length) s.classList.add(t[j]===w[j]?'ok':'bad');
+        }else{
+          s.textContent=t[j];
+          s.classList.add('extra');
+        }
+        el.appendChild(s);
+    }
+  }
+  function addWordEls(from){
+    const frag=document.createDocumentFragment();
+    for(let i=from;i<words.length;i++){
+        const el=document.createElement('div');
+        wordEls[i]=el; frag.appendChild(el);
+    }
+    wordsEl.insertBefore(frag, caret);
+    for(let i=from;i<words.length;i++) renderWord(i);
+  }
+  function renderAll(){
+    wordsEl.textContent='';
+    wordsEl.append(caret, ghostCaret);
+    wordEls=[];
+    addWordEls(0);
+    measure();
+  }
+  function measure(){
+    if(wordEls[0]) lineH=wordEls[0].offsetHeight || lineH;
+    positionAll();
+  }
+  function caretPos(w,c){
+    const el=wordEls[w]; if(!el) return null;
+    const L=el.children;
+    if(!L.length) return {x:el.offsetLeft, y:el.offsetTop};
+    if(c<L.length) return {x:L[c].offsetLeft, y:el.offsetTop};
+    const last=L[L.length-1];
+    return {x:last.offsetLeft+last.offsetWidth, y:el.offsetTop};
+  }
+  function positionAll(){
+    const p=caretPos(cur,(typed[cur]||'').length);
+    if(p){
+        caret.style.left=p.x+'px'; caret.style.top=p.y+'px';
+        if(lineH){
+          const line=Math.round(p.y/lineH);
+          wordsEl.style.transform=`translateY(${-Math.max(0,line-1)*lineH}px)`;
+          input.style.top=Math.min(p.y, lineH)+'px';
+        }
+    }
+    positionGhost();
+  }
+  function positionGhost(){
+    if(!ghost){ ghostCaret.style.display='none'; return; }
+    const ev=ghost.events[ghostIdx] || {w:0,c:0};
+    const p=caretPos(ev.w, ev.c);
+    if(!p){ ghostCaret.style.display='none'; return; }
+    ghostCaret.style.display='block';
+    ghostCaret.style.left=p.x+'px'; ghostCaret.style.top=p.y+'px';
+  }
+
+  // ---------- Statistiek ----------
+  function correctChars(){
+    let n=0;
+    for(let i=0;i<cur;i++) if(typed[i]===words[i]) n+=words[i].length+1;
+    const t=typed[cur]||'', w=words[cur]||'';
+    if(t && w.startsWith(t)) n+=t.length;
+    return n;
+  }
+  function typedChars(){
+    let n=cur;
+    for(let i=0;i<=cur;i++) n+=(typed[i]||'').length;
+    return n;
+  }
+  function elapsedSec(){ return running ? (performance.now()-startT)/1000 : 0; }
+  function wpmAt(sec, chars){ return sec>0 ? chars/5/(sec/60) : 0; }
+
+  function updateLive(){
+    if(settings.mode==='time'){
+        const left = running ? Math.max(0, Math.ceil(settings.amount-elapsedSec())) : settings.amount;
+        liveCount.textContent=left;
+    }else{
+        liveCount.textContent=`${Math.min(cur,words.length)}/${words.length}`;
+    }
+    liveCount.className = running ? '' : 'muted';
+    const s=elapsedSec();
+    liveWpm.textContent = running && s>=1 ? Math.round(wpmAt(s,correctChars()))+' wpm' : '';
+  }
+
+  // ---------- Start / stop ----------
+  function resetRun(newWords){
+    clearInterval(tick); cancelAnimationFrame(raf);
+    running=false; finished=false;
+    words=newWords; typed=['']; cur=0;
+    correctKeys=0; wrongKeys=0; secKeys=0; secErr=0; lastSec=0;
+    history=[]; events=[]; ghostIdx=0;
+    input.value='';
+    caret.classList.add('idle');
+    ghostTag.style.display = ghost ? 'inline' : 'none';
+    resultEl.hidden=true; testEl.hidden=false;
+    renderAll();
+    updateLive();
+    focusInput();
+  }
+  function newText(){
+    ghost=null;
+    gen={needCap:true,last:''};
+    const n = settings.mode==='words' ? settings.amount : 80;
+    resetRun(genWords(n, settings.mode==='words'));
+  }
+  function retry(){
+    if(!lastRun) return newText();
+    ghost=lastRun;
+    resetRun(lastRun.words.slice());
+  }
+  function start(){
+    running=true;
+    startT=performance.now();
+    caret.classList.remove('idle');
+    tick=setInterval(onTick,50);
+    raf=requestAnimationFrame(ghostLoop);
+  }
+  function pushSecond(s){
+    history.push({ s, wpm:wpmAt(s,correctChars()), raw:secKeys*12, err:secErr });
+    secKeys=0; secErr=0;
+  }
+  function onTick(){
+    if(!running) return;
+    const el=elapsedSec();
+    const limit = settings.mode==='time' ? settings.amount : Infinity;
+    while(lastSec < Math.min(Math.floor(el), limit)){ lastSec++; pushSecond(lastSec); }
+    updateLive();
+    if(settings.mode==='time' && el>=settings.amount) finish();
+  }
+  function ghostLoop(){
+    if(!running || !ghost) return;
+    const t=performance.now()-startT;
+    const evs=ghost.events;
+    let moved=false;
+    while(ghostIdx+1<evs.length && evs[ghostIdx+1].t<=t){ ghostIdx++; moved=true; }
+    if(moved) positionGhost();
+    raf=requestAnimationFrame(ghostLoop);
+  }
+
+  function finish(){
+    if(finished) return;
+    const el = settings.mode==='time' ? settings.amount : elapsedSec();
+    if(settings.mode==='words'){
+        while(lastSec < Math.floor(el)){ lastSec++; pushSecond(lastSec); }
+        if(el-lastSec>0.25 || history.length===0){
+          const part=Math.max(el-lastSec, 0.001);
+          history.push({ s:+el.toFixed(2), wpm:wpmAt(el,correctChars()), raw:secKeys*12/part, err:secErr });
+        }
+    }
+    finished=true; running=false;
+    clearInterval(tick); cancelAnimationFrame(raf);
+    input.blur();
+
+    let ok=0, bad=0, extra=0, missed=0;
+    const lastIdx=Math.min(cur, words.length-1);
+    for(let i=0;i<=lastIdx;i++){
+        const w=words[i], t=typed[i]||'';
+        for(let j=0;j<Math.max(w.length,t.length);j++){
+          if(j<t.length){
+            if(j>=w.length) extra++;
+            else if(t[j]===w[j]) ok++;
+            else bad++;
+          }else if(i<cur) missed++;
+        }
+    }
+    const totalKeys=correctKeys+wrongKeys;
+    const run={
+        words:words.slice(), events, history,
+        wpm:Math.round(wpmAt(el,correctChars())),
+        raw:Math.round(wpmAt(el,typedChars())),
+        acc: totalKeys ? Math.round(correctKeys/totalKeys*100) : 0,
+        time:el, chars:[ok,bad,extra,missed]
+    };
+    showResult(run, ghost);
+    lastRun=run;
+    if(typeof shootConfetti==='function' && (!ghost || run.wpm>ghost.wpm)) shootConfetti();
+  }
+
+  // ---------- Invoer ----------
+  function recordEvent(){
+    if(running) events.push({ t:performance.now()-startT, w:cur, c:(typed[cur]||'').length });
+  }
+  function setCurrent(seg){
+    const w=words[cur], old=typed[cur]||'';
+    seg=seg.slice(0, w.length+MAX_EXTRA);
+    if(seg.length>old.length){
+        let k=0; while(k<old.length && old[k]===seg[k]) k++;
+        for(let i=k;i<seg.length;i++){
+          secKeys++;
+          if(i<w.length && seg[i]===w[i]) correctKeys++;
+          else { wrongKeys++; secErr++; }
+        }
+    }
+    typed[cur]=seg;
+    renderWord(cur);
+    if(settings.mode==='words' && cur===words.length-1 && seg===w){ recordEvent(); finish(); }
+  }
+  function commitWord(){
+    secKeys++;
+    if(typed[cur]===words[cur]) correctKeys++; else { wrongKeys++; secErr++; }
+    cur++;
+    typed[cur]='';
+    renderWord(cur-1);
+    if(cur>=words.length){
+        if(settings.mode==='words'){ cur=words.length-1; recordEvent(); finish(); return; }
+    }
+    if(settings.mode==='time' && words.length-cur<40){
+        const from=words.length;
+        words.push(...genWords(60,false));
+        addWordEls(from);
+    }
+  }
+  input.addEventListener('input',()=>{
+    if(finished){ input.value=''; return; }
+    const v=input.value.replace(/[\u00A0\n\r\t]/g,' ');
+    if(!running && v.trim().length>0) start();
+    if(!running){ input.value=''; return; }
+    const parts=v.split(' ');
+    for(let p=0;p<parts.length;p++){
+        setCurrent(parts[p]);
+        if(finished) return;
+        if(p<parts.length-1 && typed[cur].length>0){
+          commitWord();
+          if(finished) return;
+        }
+    }
+    if(input.value!==typed[cur]) input.value=typed[cur];
+    recordEvent();
+    positionAll();
+    updateLive();
+  });
+  input.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){ e.preventDefault(); return; }
+    if(e.key==='Backspace' && input.value==='' && cur>0 && !finished && typed[cur-1]!==words[cur-1]){
+        // terug naar het vorige woord als daar een fout in zit
+        e.preventDefault();
+        typed[cur]=''; renderWord(cur);
+        cur--; renderWord(cur);
+        input.value=typed[cur];
+        recordEvent(); positionAll(); updateLive();
+    }
+  });
+  input.addEventListener('paste',e=>{ e.preventDefault(); });
+  input.addEventListener('blur',()=>{ if(isOpen && !finished) wrap.classList.add('blurred'); });
+  input.addEventListener('focus',()=> wrap.classList.remove('blurred'));
+  wrap.addEventListener('click',focusInput);
+
+  function focusInput(){
+    if(!isOpen || finished) return;
+    input.focus({preventScroll:true});
+    wrap.classList.remove('blurred');
+  }
+
+  document.addEventListener('keydown',e=>{
+    if(!isOpen) return;
+    if(e.key==='Tab'){ e.preventDefault(); newText(); return; }
+    if(!finished && document.activeElement!==input && e.key.length===1 && !e.ctrlKey && !e.metaKey && !e.altKey){
+        focusInput();
+    }
+  });
+  window.addEventListener('resize',()=>{ if(isOpen){ measure(); if(finished && lastRun) drawChart(lastRun, chartGhost); } });
+
+  // ---------- Instellingen ----------
+  const amountsEl=$('spAmounts');
+  function renderConfig(){
+    panel.querySelectorAll('[data-toggle]').forEach(b=> b.classList.toggle('on', !!settings[b.dataset.toggle]));
+    panel.querySelectorAll('[data-mode]').forEach(b=> b.classList.toggle('on', b.dataset.mode===settings.mode));
+    amountsEl.textContent='';
+    AMOUNTS[settings.mode].forEach(a=>{
+        const b=document.createElement('button');
+        b.className='spOpt'+(a===settings.amount?' on':'');
+        b.textContent=a;
+        b.addEventListener('click',()=>{ settings.amount=a; changed(); });
+        amountsEl.appendChild(b);
+    });
+  }
+  function changed(){
+    try{ localStorage.setItem('speedTypeSettings', JSON.stringify(settings)); }catch(e){}
+    lastRun=null;
+    renderConfig();
+    newText();
+  }
+  panel.querySelectorAll('[data-toggle]').forEach(b=> b.addEventListener('click',()=>{
+    settings[b.dataset.toggle]=!settings[b.dataset.toggle]; changed();
+  }));
+  panel.querySelectorAll('[data-mode]').forEach(b=> b.addEventListener('click',()=>{
+    if(settings.mode===b.dataset.mode) return focusInput();
+    settings.mode=b.dataset.mode;
+    settings.amount=AMOUNTS[settings.mode][1];
+    changed();
+  }));
+  $('spNewBtn').addEventListener('click',newText);
+  $('spRetry').addEventListener('click',retry);
+  $('spNext').addEventListener('click',newText);
+  $('spBack').addEventListener('click',()=> close(true));
+
+  // ---------- Resultaat ----------
+  let chartGhost=null;
+  function fmtTime(s){
+    s=Math.round(s);
+    return s<60 ? s+'s' : `${Math.floor(s/60)}m ${s%60}s`;
+  }
+  function showResult(run, prev){
+    testEl.hidden=true; resultEl.hidden=false;
+    $('spResWpm').textContent=run.wpm;
+    $('spResAcc').textContent=run.acc+'%';
+    $('spResRaw').textContent=run.raw;
+    $('spResChars').textContent=run.chars.join('/');
+    $('spResTime').textContent=fmtTime(run.time);
+    const extras=[settings.caps?'hoofdletters':'', settings.punct?'leestekens':''].filter(Boolean).join(' + ');
+    $('spResType').innerHTML =
+        (settings.mode==='time' ? `tijd ${settings.amount}` : `woorden ${settings.amount}`) +
+        `<br>Nederlands${extras ? '<br>'+extras : ''}`;
+    const cmp=$('spGhostCompare');
+    if(prev){
+        const d=run.wpm-prev.wpm;
+        const msg = d>0 ? `Je bent ${d} wpm sneller dan je ghost! 🚀`
+                 : d<0 ? `Je ghost was ${-d} wpm sneller. Probeer het nog eens! 💪`
+                 : `Precies even snel als je ghost!`;
+        cmp.textContent=`👻 Vorige ronde: ${prev.wpm} wpm · ${prev.acc}% — ${msg}`;
+    }else{
+        cmp.textContent='Klik op "Opnieuw" om dezelfde tekst te doen tegen je ghost 👻';
+    }
+    $('spLegendGhost').style.display = prev ? '' : 'none';
+    chartGhost=prev;
+    drawChart(run, prev);
+    $('spRetry').focus({preventScroll:true});
+  }
+
+  function drawChart(run, prev){
+    const cv=$('spChart');
+    const W=cv.clientWidth, H=cv.clientHeight;
+    if(!W || !H) return;
+    const dpr=window.devicePixelRatio||1;
+    cv.width=W*dpr; cv.height=H*dpr;
+    const g=cv.getContext('2d');
+    g.setTransform(dpr,0,0,dpr,0,0);
+    g.clearRect(0,0,W,H);
+    const data=run.history, gdata=prev ? prev.history : [];
+    if(!data.length) return;
+    const pad={l:52,r:40,t:12,b:30};
+    const maxS=Math.max(data[data.length-1].s, gdata.length ? gdata[gdata.length-1].s : 0, 1);
+    const minS=1;
+    let maxY=Math.max(10, ...data.map(d=>Math.max(d.wpm,d.raw)), ...gdata.map(d=>d.wpm));
+    maxY=Math.ceil(maxY*1.1/20)*20;
+    const maxE=Math.max(1, ...data.map(d=>d.err));
+    const X=s=> pad.l + (maxS===minS ? 0.5 : (s-minS)/(maxS-minS)) * (W-pad.l-pad.r);
+    const Y=v=> pad.t + (1-v/maxY)*(H-pad.t-pad.b);
+    const YE=v=> pad.t + (1-v/maxE)*(H-pad.t-pad.b);
+    const mono='12px ui-monospace,Menlo,Consolas,monospace';
+
+    g.font=mono; g.fillStyle='#94a3b8'; g.strokeStyle='#e2e8f0'; g.lineWidth=1;
+    for(let i=0;i<=4;i++){
+        const v=maxY*i/4, y=Y(v);
+        g.beginPath(); g.moveTo(pad.l,y); g.lineTo(W-pad.r,y); g.stroke();
+        g.textAlign='right'; g.textBaseline='middle'; g.fillText(Math.round(v), pad.l-8, y);
+    }
+    for(let i=0;i<=Math.min(maxE,4);i++){
+        const v=Math.round(maxE*i/Math.min(maxE,4));
+        g.textAlign='left'; g.fillText(v, W-pad.r+8, YE(v));
+    }
+    const span=Math.max(1, Math.ceil((maxS-minS+1)/15));
+    g.textAlign='center'; g.textBaseline='top';
+    for(let s=minS;s<=Math.floor(maxS);s+=span) g.fillText(s, X(s), H-pad.b+8);
+    g.save(); g.translate(14,(H-pad.b+pad.t)/2); g.rotate(-Math.PI/2);
+    g.textBaseline='middle'; g.fillText('woorden per minuut',0,0); g.restore();
+    g.save(); g.translate(W-8,(H-pad.b+pad.t)/2); g.rotate(Math.PI/2);
+    g.textBaseline='middle'; g.fillText('fouten',0,0); g.restore();
+
+    function line(pts,color,width,dash,dots){
+        if(!pts.length) return;
+        g.save(); g.strokeStyle=color; g.lineWidth=width; g.setLineDash(dash||[]);
+        g.lineJoin='round'; g.lineCap='round';
+        g.beginPath(); g.moveTo(pts[0].x,pts[0].y);
+        for(let i=1;i<pts.length;i++){
+          const mx=(pts[i-1].x+pts[i].x)/2, my=(pts[i-1].y+pts[i].y)/2;
+          g.quadraticCurveTo(pts[i-1].x,pts[i-1].y,mx,my);
+        }
+        g.lineTo(pts[pts.length-1].x,pts[pts.length-1].y);
+        g.stroke();
+        if(dots){ g.fillStyle=color; pts.forEach(p=>{ g.beginPath(); g.arc(p.x,p.y,2.5,0,Math.PI*2); g.fill(); }); }
+        g.restore();
+    }
+    line(data.map(d=>({x:X(d.s),y:Y(Math.min(d.raw,maxY))})), '#94a3b8', 2);
+    if(gdata.length) line(gdata.map(d=>({x:X(d.s),y:Y(d.wpm)})), '#8b5cf6', 2, [6,5]);
+    line(data.map(d=>({x:X(d.s),y:Y(d.wpm)})), '#f59e0b', 3, null, true);
+    g.fillStyle='#ef4444'; g.font='bold 13px sans-serif'; g.textAlign='center'; g.textBaseline='middle';
+    data.forEach(d=>{ if(d.err>0) g.fillText('✕', X(d.s), YE(d.err)); });
+  }
+
+  // ---------- Openen / sluiten ----------
+  function open(){
+    isOpen=true;
+    document.body.classList.add('speed-mode');
+    panel.style.display='block';
+    window.scrollTo(0,0);
+    renderConfig();
+    if(!words.length || running || finished) newText(); else { measure(); focusInput(); }
+  }
+  function close(backToLevels){
+    if(!isOpen) return;
+    isOpen=false;
+    clearInterval(tick); cancelAnimationFrame(raf);
+    running=false;
+    words=[];
+    input.blur();
+    document.body.classList.remove('speed-mode');
+    panel.style.display='none';
+    if(backToLevels) window.scrollTo(0,0);
+  }
+
+  return { open, close };
+})();
+</script>
 
 <script>
 // -------- Teksten --------
@@ -460,6 +1128,12 @@ const btnStyle=document.getElementById('btnStyle');
 const btnNextLevel=document.getElementById('btnNextLevel');
 const btnResetStyle=document.getElementById('btnResetStyle');
 const btnStyleResult=document.getElementById('btnStyleResult');
+const btnSpeed=document.getElementById('btnSpeed');
+const btnToSpeed=document.getElementById('btnToSpeed');
+
+function unlockSpeed(){
+  btnSpeed.disabled=false; btnSpeed.classList.remove('disabled');
+}
 
 const resultOverlay=document.getElementById('resultOverlay');
 const resultGrade=document.getElementById('resultGrade');
@@ -481,6 +1155,9 @@ btnEasy.addEventListener('click',()=> chooseLevel('easy'));
 btnNormal.addEventListener('click',()=>{ if(!btnNormal.disabled) chooseLevel('normal'); });
 btnHard.addEventListener('click',()=>{ if(!btnHard.disabled) chooseLevel('hard'); });
 btnStyle.addEventListener('click',()=>{ if(!btnStyle.disabled) chooseLevel('style'); });
+btnSpeed.addEventListener('click',()=>{ if(!btnSpeed.disabled) chooseLevel('speed'); });
+btnStyleResult.addEventListener('click',()=>{ unlockSpeed(); showEndResult(); });
+btnToSpeed.addEventListener('click',()=>{ unlockSpeed(); chooseLevel('speed'); });
 btnNextLevel.addEventListener('click',goNextLevel);
 
 // -------- Interactie & Anti-Cheat --------
@@ -744,7 +1421,8 @@ function goNextLevel(){
     btnStyle.disabled=false; btnStyle.classList.remove('disabled');
     chooseLevel('style');
   }else if(currentLevel==='style'){
-    chooseLevel('easy');
+    unlockSpeed();
+    chooseLevel('speed');
   }
 }
 
@@ -845,6 +1523,7 @@ function updateStyleSentenceChips(){
   styleProgressText.textContent = `Zinnen af: ${done}/${total} (${percent}%)`;
   levelStats.style.percent = percent;
   levelStats.style.done = (done===total && total>0);
+  if(levelStats.style.done) unlockSpeed();
 }
 
 function markWordChanged(span){
@@ -1000,6 +1679,12 @@ function setTarget(newText){
   renderCheatsheet(currentLevel);
 }
 function chooseLevel(level){
+  // Snelheid typen heeft een eigen scherm; het vorige level blijft bewaard voor "Terug"
+  if(level==='speed'){
+    SpeedGame.open();
+    return;
+  }
+  SpeedGame.close();
   currentLevel=level;
 
   if(level==='style'){
