@@ -364,7 +364,7 @@
         <button class="levelBtn normal disabled" id="btnNormal" disabled>Normaal</button>
         <button class="levelBtn hard   disabled" id="btnHard" disabled>Moeilijk</button>
         <button class="levelBtn style  disabled" id="btnStyle" disabled>Kleur typen</button>
-        <button class="levelBtn speed  disabled" id="btnSpeed" disabled>⚡ Snelheid</button>
+        <button class="levelBtn speed  disabled" id="btnSpeed">⚡ Snelheid</button>
       </div>
       <div class="hint" id="hint">
         Je start bij <strong>Makkelijk</strong>: alleen woorden en spaties. Rond af om het volgende niveau te openen.
@@ -1266,7 +1266,7 @@ const btnSpeed=document.getElementById('btnSpeed');
 const btnToSpeed=document.getElementById('btnToSpeed');
 
 function unlockSpeed(){
-  btnSpeed.disabled=false; btnSpeed.classList.remove('disabled');
+  btnSpeed.classList.remove('disabled');
 }
 
 const resultOverlay=document.getElementById('resultOverlay');
@@ -1289,7 +1289,8 @@ btnEasy.addEventListener('click',()=> chooseLevel('easy'));
 btnNormal.addEventListener('click',()=>{ if(!btnNormal.disabled) chooseLevel('normal'); });
 btnHard.addEventListener('click',()=>{ if(!btnHard.disabled) chooseLevel('hard'); });
 btnStyle.addEventListener('click',()=>{ if(!btnStyle.disabled) chooseLevel('style'); });
-btnSpeed.addEventListener('click',()=>{ if(!btnSpeed.disabled) chooseLevel('speed'); });
+// Easter egg: Snelheid lijkt op slot (grijs), maar opent altijd bij klikken
+btnSpeed.addEventListener('click',()=> chooseLevel('speed'));
 btnStyleResult.addEventListener('click',()=>{ unlockSpeed(); showEndResult(); });
 btnToSpeed.addEventListener('click',()=>{ unlockSpeed(); chooseLevel('speed'); });
 btnNextLevel.addEventListener('click',goNextLevel);
